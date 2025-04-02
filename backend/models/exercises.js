@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
 
 const Exercise = sequelize.define(
-  "Exercise",
+  'Exercise',
   {
     exercise_id: {
       type: DataTypes.BIGINT,
