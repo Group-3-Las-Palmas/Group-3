@@ -1,8 +1,4 @@
-import sequelize from "../db";
-
-// models/index.js
-
-import sequelize from '../db.js';
+import sequelize from "../db.js";
 
 // Import all model definition files
 import User from './users.js';
@@ -38,7 +34,7 @@ UserExercise.belongsTo(Exercise, { foreignKey: 'exercise_id' });
 Reward.belongsTo(Exercise, { foreignKey: 'exercise_id' });
 
 const db = {
-  sequelize, // The Sequelize instance
+  sequelize,
   User,
   Post,
   Comment,

@@ -1,17 +1,17 @@
 import sequelize from "../db.js";
 import { DataTypes } from "sequelize"
 
-const userExercise = sequelize.define(
+const UserExercise = sequelize.define(
     "UserExercise",
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.BIGINT,
             allowNull: false,
             primaryKey: true,
             autoIncrement: true,
         },
         user_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.BIGINT,
             allowNull: false,
             references: { 
                 model: "users",
@@ -19,7 +19,7 @@ const userExercise = sequelize.define(
             },
         },
         exercise_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.BIGINT,
             allowNull: false,
             references: { 
                 model: "exercises",
@@ -29,10 +29,12 @@ const userExercise = sequelize.define(
         completed_times: {
             type: DataTypes.INTEGER,
             allowNull: false,
+            defaultValue: 1
         },
         is_favourite: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
+            allowNull: false
           },
     });
       
