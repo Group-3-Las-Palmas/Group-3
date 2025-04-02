@@ -35,7 +35,11 @@ export const createUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    res.status(201).json(user);
+    res.status(201).json({
+      id: user.user_id,
+      username: user.username,
+      email: user.email,
+    });
   } catch (error) {
     res.status(500).json({ error: "Error to create user" });
   }
@@ -47,9 +51,9 @@ export const updateUser = async (req, res) => {
     const userId = req.user.user_id;
     const { username, email, ...extraFields } = req.body;
 
-    if (Object.keys(extraFields).lenght > 0) {
+    if (Object.keys(extraFields).length > 0) {
       return res.status(400).json({
-        message: "Only 'name', 'email' and 'language' can be updated.",
+        message: "Only 'name' and 'email' can be updated.",
       });
     }
 
@@ -73,12 +77,16 @@ export const updateUser = async (req, res) => {
     }
 
     const updateFields = {};
-    if (username !== undefined) updateFields.name = username;
+    if (username !== undefined) updateFields.username = username;
     if (email !== undefined) updateFields.email = email;
 
     const updateUser = await existingUser.update(updateFields);
 
-    res.status(200).json(updateUser);
+    res.status(200).json({
+      id: updateUser.user_id,
+      username: updateUser.username,
+      email: updateUser.email,
+    });
   } catch (error) {
     res.status(500).json({ error: "Error updating user." });
   }
@@ -113,9 +121,12 @@ export const getUserById = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    
-    res.json(user);
 
+    res.json({
+      id: user.user_id,
+      username: user.username,
+      email: user.email,
+    });
   } catch (error) {
     res.status(500).json({ error: "Error getting user" });
   }
