@@ -34,4 +34,4 @@ const Post = sequelize.define(
   }
 );
 
-export default Exercise;
+export default Post;
