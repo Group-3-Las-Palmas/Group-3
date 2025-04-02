@@ -30,7 +30,7 @@ const userExercise = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        isFavourite: {
+        is_favourite: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
           },
