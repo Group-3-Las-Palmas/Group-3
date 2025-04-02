@@ -7,7 +7,7 @@ const { User } = models;
 export const getUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: ["user_id", "name", "email"],
+      attributes: ["user_id", "username", "email"],
     });
     res.json(users);
   } catch (error) {
@@ -17,9 +17,9 @@ export const getUsers = async (req, res) => {
 
 //Create new user
 export const createUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { username, email, password } = req.body;
 
-  if (!name || !email || !password) {
+  if (!username || !email || !password) {
     return res
       .status(400)
       .json({ error: "Email, password and name are required." });
@@ -30,7 +30,7 @@ export const createUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      name,
+      username,
       email,
       password: hashedPassword,
     });
@@ -45,7 +45,7 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const userId = req.user.user_id;
-    const { name, email, ...extraFields } = req.body;
+    const { username, email, ...extraFields } = req.body;
 
     if (Object.keys(extraFields).lenght > 0) {
       return res.status(400).json({
@@ -53,7 +53,7 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    if (name !== undefined && name.trim() === "") {
+    if (username !== undefined && username.trim() === "") {
       return res.status(400).json({
         message: "The 'name' field cannot be empty.",
       });
@@ -73,7 +73,7 @@ export const updateUser = async (req, res) => {
     }
 
     const updateFields = {};
-    if (name !== undefined) updateFields.name = name;
+    if (username !== undefined) updateFields.name = username;
     if (email !== undefined) updateFields.email = email;
 
     const updateUser = await existingUser.update(updateFields);
@@ -107,7 +107,7 @@ export const getUserById = async (req, res) => {
 
   try {
     const user = await User.findByPk(id, {
-      attributes: ["user_id", "name", "email"],
+      attributes: ["user_id", "username", "email"],
     });
 
     if (!user) {
