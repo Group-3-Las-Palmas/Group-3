@@ -12,12 +12,14 @@ function App() {
 
   return (
     <>
-    <BrowserRouter>
-      <navBar />
-      <Routes>
-        <Route path="/profile" element={<profilePage />} />
-      </Routes>
-      </BrowserRouter>
+      <BrowserRouter>
+        <navBar />
+        <Routes>
+          <Route>
+            <navBar />
+          </Route>
+        </Routes>
+      </BrowserRouter >
     </>
   )
 }
