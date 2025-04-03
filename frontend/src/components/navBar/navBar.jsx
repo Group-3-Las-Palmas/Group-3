@@ -1,18 +1,25 @@
+import React, { useState } from "react";
 import NavBarContainer from "./navBarStyled.js";
-import { navLink } from "react-router-dom";
-
+import ModalComponent from "./ModalComponent";
 
 export const NavBar = () => {
-    return (
-        <navBarContainer>
-            <ul>
-                <li>
-                    <navLink to="/"><span class="material-symbols-outlined">
-                        menu
-                    </span></navLink>
-                </li>
-                <li></li>
-            </ul>
-        </navBarContainer>
-    )
-}
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setModalOpen(!isModalOpen);
+  };
+
+  return (
+    <NavBarContainer>
+      <ul>
+        <li>
+          <button onClick={toggleModal} style={{ background: "none", border: "none" }}>
+            <span className="material-symbols-outlined">menu</span>
+          </button>
+        </li>
+        <li>{/* Andre navlinks */}</li>
+      </ul>
+      {isModalOpen && <ModalComponent onClose={toggleModal} />}
+    </NavBarContainer>
+  );
+};
