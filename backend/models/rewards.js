@@ -4,7 +4,7 @@ import sequelize from "../db.js";
 const Reward = sequelize.define(
     "Reward",
     {
-        reward_id: {
+        id: {
             type: DataTypes.BIGINT,
             allowNull: false,
             primaryKey: true,
@@ -13,6 +13,10 @@ const Reward = sequelize.define(
         exercise_id: {
             type: DataTypes.BIGINT,
             allowNull: false,
+            references: {
+                model: "exercises",
+                key: "exercise_id",
+            },
         },
         name: {
             type: DataTypes.STRING,

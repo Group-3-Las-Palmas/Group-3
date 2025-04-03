@@ -12,8 +12,7 @@ export const getRewards = async (req, res) => {
           model: Exercise,
           attributes: ["title"], // Exercise title
         },
-      ],
-      order: [["earned_at", "DESC"]],
+      ]
     });
     res.json(rewards);
   } catch (error) {
