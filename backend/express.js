@@ -4,34 +4,38 @@ import cors from 'cors';
 import sequelize from './db.js';
 
 import usersRoutes from './routes/usersRoutes.js';
-import postsRoutes from './routes/postsRoutes.js'; // Asume que has creado este archivo
+import postsRoutes from './routes/postsRoutes.js';
+import commentsRoutes from './routes/commentsRoutes.js';
+import exercisesRoutes from './routes/exercisesRoutes.js';
 
-import './models/index.js'; // Importar para que sync reconozca las asociaciones
+import './models/index.js'; // Import relations
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors()); // Habilita CORS si es necesario
+app.use(cors()); // Enabled CORS if it is necessary
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rutas base de la API
+// API routes
 app.use('/api/users', usersRoutes);
 app.use('/api/posts', postsRoutes);
+app.use('/api/comments', commentsRoutes);
+app.use('/api/exercises', exercisesRoutes);
 
-// Ruta raíz simple
+// Root route
 app.get('/', (req, res) => {
-  res.send('API woring!');
+  res.send('API working!');
 });
 
-// Define el puerto
+// Port
 const PORT = process.env.PORT || 3000;
 
 sequelize.sync({ force: false })
   .then(() => {
     console.log('Database & tables synced successfully.');
-    // Inicia el servidor SOLO si la sincronización fue exitosa
+    // Run server if the connection was succesfull
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
