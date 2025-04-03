@@ -16,8 +16,7 @@ export const getComments = async (req, res) => {
           model: Exercise,
           attributes: ["title"],
         },
-      ],
-      order: [["create_at", "DESC"]],
+      ]
     });
     res.json(comments);
   } catch (error) {
