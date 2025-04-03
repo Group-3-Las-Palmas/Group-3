@@ -8,7 +8,7 @@ export const authenticateToken = (req, res, next) => {
   console.log('Token:', token);
 
   if (!token) {
-    return res.status(401).json({ message: 'Token no proporcionado o inválido' });
+    return res.status(401).json({ message: 'Token not provided or invalid' });
   }
 
   try {
