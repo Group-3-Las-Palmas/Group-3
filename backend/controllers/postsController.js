@@ -24,10 +24,6 @@ export const getPosts = async (req, res) => {
 // Create new post
 export const createPost = async (req, res) => {
 
-  if (!req.user || !req.user.user_id) {
-    return res.status(401).json({ error: "Authentication required." });
-  }
-
   const { content } = req.body;
   const userId = req.user.user_id;
 
@@ -41,12 +37,7 @@ export const createPost = async (req, res) => {
       content: content.trim(),
     });
 
-    res.status(201).json({
-      post_id: newPost.post_id,
-      user_id: newPost.user_id,
-      content: newPost.content,
-      create_at: newPost.create_at,
-    });
+    res.status(201).json(newPost);
   } catch (error) {
     res.status(500).json({ error: "Error creating post" });
   }
@@ -54,11 +45,6 @@ export const createPost = async (req, res) => {
 
 // Update post
 export const updatePost = async (req, res) => {
-
-  if (!req.user || !req.user.user_id) {
-    return res.status(401).json({ error: "Authentication required." });
-  }
-
 
   const { postId } = req.params;
   const { content } = req.body;
@@ -83,12 +69,7 @@ export const updatePost = async (req, res) => {
 
     const updatedPost = await post.update({ content: content.trim() });
 
-    res.status(200).json({
-      post_id: updatedPost.post_id,
-      user_id: updatedPost.user_id,
-      content: updatedPost.content,
-      create_at: updatedPost.create_at,
-    });
+    res.status(200).json(updatedPost);
   } catch (error) {
     res.status(500).json({ error: "Error updating post." });
   }
@@ -96,10 +77,6 @@ export const updatePost = async (req, res) => {
 
 // Delete post
 export const deletePost = async (req, res) => {
-  
-  if (!req.user || !req.user.user_id) {
-    return res.status(401).json({ error: "Authentication required." });
-  }
 
   const { postId } = req.params;
   const userId = req.user.user_id;
@@ -138,6 +115,9 @@ export const deletePost = async (req, res) => {
 export const getPostById = async (req, res) => {
   
   const { postId } = req.params;
+
+  console.log("Intentando encontrar post con postId:", postId);
+  console.log("Tipo de postId:", typeof postId);
 
   try {
     const post = await Post.findByPk(postId, {
