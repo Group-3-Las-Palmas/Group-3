@@ -24,23 +24,8 @@ export const register = async (req, res) => {
       password: hashedPassword,
     });
 
-    // Opcional: generar token para el usuario registrado
-    const payload = {
-      user_id: newUser.user_id,
-      username: newUser.username,
-    };
-
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      console.error("JWT_SECRET no está definido.");
-      return res.status(500).json({ message: "Error interno del servidor." });
-    }
-
-    const token = jwt.sign(payload, secret, { expiresIn: "1h" });
-
     res.status(201).json({
       message: "User registered successfully",
-      token, // se devuelve el token
       user: {
         user_id: newUser.user_id,
         username: newUser.username,
