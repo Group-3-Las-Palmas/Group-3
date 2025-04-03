@@ -4,7 +4,8 @@ import cors from 'cors';
 import sequelize from './db.js';
 
 import usersRoutes from './routes/usersRoutes.js';
-import postsRoutes from './routes/postsRoutes.js'; // Asume que has creado este archivo
+import postsRoutes from './routes/postsRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 import './models/index.js'; // Importar para que sync reconozca las asociaciones
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Rutas base de la API
+app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/posts', postsRoutes);
 
