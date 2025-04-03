@@ -1,17 +1,18 @@
-import { NavBarContainer } from "./navBarStyled";
+import NavBarContainer from "./navBarStyled.js";
 import { navLink } from "react-router-dom";
 
 
-export default function NavBar() {
+export const NavBar = () => {
     return (
         <navBarContainer>
             <ul>
                 <li>
-                    <navLink to="/profilePage"><span class="material-symbols-outlined">
+                    <navLink to="/"><span class="material-symbols-outlined">
                         menu
                     </span></navLink>
                 </li>
                 <li></li>
             </ul>
         </navBarContainer>
-    )}
+    )
+}
