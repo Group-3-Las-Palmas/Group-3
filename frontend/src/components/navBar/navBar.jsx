@@ -5,11 +5,11 @@ export const NavBar = () => {
     return (
         <NavBarContainer>
             <ul>
-                <li><homeButton to="/">Home</homeButton></li>
-                <li><activityButton to="/activityPage">Activity</activityButton></li>
-                <li><currentActivityButton to="/current-activity">Current Activity</currentActivityButton></li>
-                <li><forumButton to="/forumPage">Forum</forumButton></li>
-                <li><profileButton to="/profilePage">Profile</profileButton></li>
+                <li><Link to="/"><homeButton>Home</homeButton></Link></li>
+                <li><Link to="/activityPage"><activityButton>Activity</activityButton></Link></li>
+                <li><Link to="/current-activity"><currentActivityButton>Current Activity</currentActivityButton></Link></li>
+                <li><Link to="/forumPage"><forumButton>Forum</forumButton></Link></li>
+                <li><Link to="/profilePage"><profileButton>Profile</profileButton></Link></li>
             </ul>
         </NavBarContainer>
     )
