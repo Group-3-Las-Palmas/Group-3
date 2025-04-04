@@ -1,4 +1,5 @@
 import express from "express";
+import { authenticateToken } from '../middleware/authenticateToken.js';
 import {
   getExercises,
   getExerciseById,
@@ -9,10 +10,10 @@ import {
 
 const router = express.Router();
 
-router.get("/", getExercises);
-router.get("/:id", getExerciseById);
-router.post("/", createExercise);
-router.put("/:id", updateExercise);
-router.delete("/:id", deleteExercise);
+router.get("/", authenticateToken, getExercises);
+router.get("/:id", authenticateToken, getExerciseById);
+router.post("/", authenticateToken, createExercise);
+router.put("/:id", authenticateToken, updateExercise);
+router.delete("/:id", authenticateToken, deleteExercise);
 
 export default router;

@@ -1,4 +1,5 @@
 import express from "express";
+import { authenticateToken } from '../middleware/authenticateToken.js';
 import {
   getComments,
   getCommentById,
@@ -9,10 +10,10 @@ import {
 
 const router = express.Router();
 
-router.get("/", getComments);
-router.get("/:id", getCommentById);
-router.post("/", createComment);
-router.put("/:id", updateComment);
-router.delete("/:id", deleteComment);
+router.get("/", authenticateToken, getComments);
+router.get("/:id", authenticateToken, getCommentById);
+router.post("/", authenticateToken, createComment);
+router.put("/:id", authenticateToken, updateComment);
+router.delete("/:id", authenticateToken, deleteComment);
 
 export default router;
