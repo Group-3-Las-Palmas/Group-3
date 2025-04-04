@@ -6,7 +6,7 @@ const { Reward, Exercise } = models;
 export const getRewards = async (req, res) => {
   try {
     const rewards = await Reward.findAll({
-      attributes: ["id", "name", "badge", "earned_at", "exercise_id"],
+      attributes: ["reward_id", "name", "badge", "earned_at", "exercise_id"],
       include: [
         {
           model: Exercise,
@@ -26,7 +26,7 @@ export const getRewardById = async (req, res) => {
 
   try {
     const reward = await Reward.findByPk(id, {
-      attributes: ["id", "name", "badge", "earned_at", "exercise_id"],
+      attributes: ["reward_id", "name", "badge", "earned_at", "exercise_id"],
       include: [
         {
           model: Exercise,
@@ -111,7 +111,7 @@ export const deleteReward = async (req, res) => {
       return res.status(404).json({ message: "Reward not found" });
     }
 
-    await Reward.destroy({ where: { id } });
+    await Reward.destroy({ where: { reward_id: id } });
 
     res.status(200).json({ message: `Reward with ID ${id} successfully deleted.` });
   } catch (error) {
