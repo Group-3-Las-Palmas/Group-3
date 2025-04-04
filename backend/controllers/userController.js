@@ -7,7 +7,7 @@ const { User } = models;
 export const getUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: ['user_id', 'username', 'email'],
+      attributes: ["user_id", "username", "email"],
     });
     res.json(users);
   } catch (error) {
@@ -26,7 +26,17 @@ export const createUser = async (req, res) => {
   }
 
   try {
-    // Hash de password
+    const existingUser = await User.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (existingUser) {
+      return res.status(409).json({ error: `Email already exists.` }); // 409 Conflict
+    }
+
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
@@ -66,6 +76,7 @@ export const updateUser = async (req, res) => {
         message: "The 'username' field cannot be empty.",
       });
     }
+
     if (email !== undefined && email.trim() === "") {
       return res.status(400).json({
         message: "The 'email' field cannot be empty.",
@@ -120,7 +131,7 @@ export const getUserById = async (req, res) => {
 
   try {
     const user = await User.findByPk(id, {
-      attributes: ['user_id', 'username', 'email'],
+      attributes: ["user_id", "username", "email"],
     });
 
     if (!user) {

@@ -16,6 +16,16 @@ export const register = async (req, res) => {
   }
 
   try {
+    const existingUser = await User.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (existingUser) {
+      return res.status(409).json({ error: `Email already exists.` }); // 409 Conflict
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
@@ -73,4 +83,3 @@ export const login = async (req, res) => {
     },
   });
 };
-
