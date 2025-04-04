@@ -16,10 +16,10 @@ export const getExercises = async (req, res) => {
 
 // Get exercise by id
 export const getExerciseById = async (req, res) => {
-  const { exercise_id } = req.params;
+  const { id } = req.params;
 
   try {
-    const exercise = await Exercise.findByPk(exercise_id, {
+    const exercise = await Exercise.findByPk(id, {
       attributes: ["exercise_id", "title", "description", "time", "category", "goal"],
     });
 
@@ -47,7 +47,7 @@ export const createExercise = async (req, res) => {
       description: description.trim(),
       time,
       category: category.trim(),
-      goal: goal.trim(),
+      goal: goal,
     });
 
     res.status(201).json(newExercise);
@@ -58,11 +58,11 @@ export const createExercise = async (req, res) => {
 
 // Update exercise
 export const updateExercise = async (req, res) => {
-  const { exercise_id } = req.params;
+  const { id } = req.params;
   const { title, description, time, category, goal } = req.body;
 
   try {
-    const exercise = await Exercise.findByPk(exercise_id);
+    const exercise = await Exercise.findByPk(id);
 
     if (!exercise) {
       return res.status(404).json({ message: "Exercise not found" });
@@ -73,7 +73,7 @@ export const updateExercise = async (req, res) => {
       description: description ? description.trim() : exercise.description,
       time: time !== undefined ? time : exercise.time,
       category: category ? category.trim() : exercise.category,
-      goal: goal ? goal.trim() : exercise.goal,
+      goal: goal ? goal : exercise.goal,
     });
 
     res.status(200).json(updatedExercise);
@@ -84,18 +84,18 @@ export const updateExercise = async (req, res) => {
 
 // Remove exercise
 export const deleteExercise = async (req, res) => {
-  const { exercise_id } = req.params;
+  const { id } = req.params;
 
   try {
-    const exercise = await Exercise.findByPk(exercise_id);
+    const exercise = await Exercise.findByPk(id);
 
     if (!exercise) {
       return res.status(404).json({ message: "Exercise not found" });
     }
 
-    await Exercise.destroy({ where: { exercise_id } });
+    await Exercise.destroy({ where: { exercise_id: id } });
 
-    res.status(200).json({ message: `Exercise with ID ${exercise_id} successfully deleted.` });
+    res.status(200).json({ message: `Exercise with ID ${id} successfully deleted.` });
   } catch (error) {
     res.status(500).json({ error: "Error deleting exercise" });
   }
