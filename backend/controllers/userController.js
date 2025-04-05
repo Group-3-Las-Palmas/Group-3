@@ -61,16 +61,16 @@ export const updateUser = async (req, res) => {
     // Ahora obtenemos el ID desde los parámetros de ruta
     const userId = req.params.id;
 
-    const { username, email, ...extraFields } = req.body;
+    const { username, email, password, ...extraFields } = req.body;
 
-    // Se permiten únicamente los campos 'username' y 'email'
+    // Verify fields
     if (Object.keys(extraFields).length > 0) {
       return res.status(400).json({
-        message: "Only 'username' and 'email' can be updated.",
+        message: "Incorrect fields.",
       });
     }
 
-    // Validar que 'username' y 'email' no sean cadenas vacías (si se envían)
+    // Verify empty fields
     if (username !== undefined && username.trim() === "") {
       return res.status(400).json({
         message: "The 'username' field cannot be empty.",
@@ -83,17 +83,24 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    // Buscar al usuario existente usando la clave primaria
+    if (password !== undefined && password.trim() === "") {
+      return res.status(400).json({
+        message: "The 'password' field cannot be empty.",
+      });
+    }
+
+    // Check user
     const existingUser = await User.findByPk(userId);
 
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Actualizar únicamente los campos permitidos
+    // Update only existing fields
     const updateFields = {};
     if (username !== undefined) updateFields.username = username;
     if (email !== undefined) updateFields.email = email;
+    // if (password !== undefined) updateFields.password = password
 
     const updatedUser = await existingUser.update(updateFields);
 
@@ -101,6 +108,7 @@ export const updateUser = async (req, res) => {
       id: updatedUser.user_id,
       username: updatedUser.username,
       email: updatedUser.email,
+      // password: bcrypt.hash(updatedUser.password, 10)
     });
   } catch (error) {
     console.error("Error updating user:", error);
