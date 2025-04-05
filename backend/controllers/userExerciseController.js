@@ -1,6 +1,6 @@
 import models from "../models/index.js";
 
-const { UserExercise } = models;
+const { UserExercise, User, Exercise } = models;
 
 //Get all userExercises
 export const getUserExercises = async (req, res) => {
@@ -57,7 +57,7 @@ export const createUserExercise = async (req, res) => {
       const userExercise = await UserExercise.create({
         user_id,
         exercise_id,
-        completed_times: completed_times || 1,
+        completed_times: completed_times || 0,
         is_favourite: is_favourite || false,
       });
   
