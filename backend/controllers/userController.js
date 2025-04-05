@@ -61,16 +61,24 @@ export const updateUser = async (req, res) => {
     // Ahora obtenemos el ID desde los parámetros de ruta
     const userId = req.params.id;
 
+<<<<<<< HEAD
     const { username, password, ...extraFields } = req.body;
+=======
+    const { username, email, password, ...extraFields } = req.body;
+>>>>>>> 1b51205 (Rewards and UserExercises routes enabled)
 
-    // Se permiten únicamente los campos 'username' y 'email'
+    // Verify fields
     if (Object.keys(extraFields).length > 0) {
       return res.status(400).json({
+<<<<<<< HEAD
         message: "Only 'username' and 'password' can be updated.",
+=======
+        message: "Incorrect fields.",
+>>>>>>> 1b51205 (Rewards and UserExercises routes enabled)
       });
     }
 
-    // Validar que 'username' y 'email' no sean cadenas vacías (si se envían)
+    // Verify empty fields
     if (username !== undefined && username.trim() === "") {
       return res.status(400).json({
         message: "The 'username' field cannot be empty.",
@@ -83,24 +91,40 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    // Buscar al usuario existente usando la clave primaria
+    if (password !== undefined && password.trim() === "") {
+      return res.status(400).json({
+        message: "The 'password' field cannot be empty.",
+      });
+    }
+
+    // Check user
     const existingUser = await User.findByPk(userId);
 
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Actualizar únicamente los campos permitidos
+    // Update only existing fields
     const updateFields = {};
     if (username !== undefined) updateFields.username = username;
+<<<<<<< HEAD
     if (password !== undefined) updateFields.password = await bcrypt.hash(password, 10);
     console.log(`DEBUG: Hash generado: ${updateFields.password}`);
+=======
+    if (email !== undefined) updateFields.email = email;
+    // if (password !== undefined) updateFields.password = password
+>>>>>>> 1b51205 (Rewards and UserExercises routes enabled)
 
     const updatedUser = await existingUser.update(updateFields);
 
     res.status(200).json({
       id: updatedUser.user_id,
       username: updatedUser.username,
+<<<<<<< HEAD
+=======
+      email: updatedUser.email,
+      // password: bcrypt.hash(updatedUser.password, 10)
+>>>>>>> 1b51205 (Rewards and UserExercises routes enabled)
     });
   } catch (error) {
     console.error("Error updating user:", error);

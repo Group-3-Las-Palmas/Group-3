@@ -7,6 +7,8 @@ import usersRoutes from './routes/usersRoutes.js';
 import postsRoutes from './routes/postsRoutes.js';
 import commentsRoutes from './routes/commentsRoutes.js';
 import exercisesRoutes from './routes/exercisesRoutes.js';
+import rewardsRoutes from './routes/rewardsRoutes.js';
+import userExercisesRoutes from './routes/userExercisesRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import rewardsRoutes from './routes/rewardsRoutes.js';
 
@@ -27,6 +29,7 @@ app.use('/api/posts', postsRoutes);
 app.use('/api/comments', commentsRoutes);
 app.use('/api/exercises', exercisesRoutes);
 app.use('/api/rewards', rewardsRoutes);
+app.use('/api/user-exercises', userExercisesRoutes);
 
 // Root route
 app.get('/', (req, res) => {
