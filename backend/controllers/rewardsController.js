@@ -49,8 +49,8 @@ export const getRewardById = async (req, res) => {
 export const createReward = async (req, res) => {
   const { name, badge, exercise_id } = req.body;
 
-  if (!name || !badge || !exercise_id) {
-    return res.status(400).json({ error: "All fields are required." });
+  if (!name || !exercise_id) {
+    return res.status(400).json({ error: "Name and exercise id are required." });
   }
 
   try {
@@ -62,7 +62,7 @@ export const createReward = async (req, res) => {
 
     const newReward = await Reward.create({
       name: name.trim(),
-      badge: badge.trim(),
+      badge: badge ? badge.trim() : null, //can be null
       exercise_id,
       earned_at: new Date(),
     });
