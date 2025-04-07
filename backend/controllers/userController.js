@@ -61,12 +61,12 @@ export const updateUser = async (req, res) => {
     // Ahora obtenemos el ID desde los parámetros de ruta
     const userId = req.params.id;
 
-    const { username, email, ...extraFields } = req.body;
+    const { username, password, ...extraFields } = req.body;
 
     // Se permiten únicamente los campos 'username' y 'email'
     if (Object.keys(extraFields).length > 0) {
       return res.status(400).json({
-        message: "Only 'username' and 'email' can be updated.",
+        message: "Only 'username' and 'password' can be updated.",
       });
     }
 
@@ -77,9 +77,9 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    if (email !== undefined && email.trim() === "") {
+    if (password !== undefined && password === "") {
       return res.status(400).json({
-        message: "The 'email' field cannot be empty.",
+        message: "The 'password' field cannot be empty.",
       });
     }
 
@@ -93,14 +93,14 @@ export const updateUser = async (req, res) => {
     // Actualizar únicamente los campos permitidos
     const updateFields = {};
     if (username !== undefined) updateFields.username = username;
-    if (email !== undefined) updateFields.email = email;
+    if (password !== undefined) updateFields.password = await bcrypt.hash(password, 10);
+    console.log(`DEBUG: Hash generado: ${updateFields.password}`);
 
     const updatedUser = await existingUser.update(updateFields);
 
     res.status(200).json({
       id: updatedUser.user_id,
       username: updatedUser.username,
-      email: updatedUser.email,
     });
   } catch (error) {
     console.error("Error updating user:", error);
