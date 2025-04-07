@@ -24,6 +24,10 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    profile_image_url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    }
   },
   {
     tableName: "users",

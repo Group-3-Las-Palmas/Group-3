@@ -10,7 +10,7 @@ export const NavBar = () => {
     return (
         <NavBarContainer>
             <ul>
-                <li><Link to="/"><img src={homeIcon} alt="Home" /></Link></li>
+                <li><Link to="/mainPage"><img src={homeIcon} alt="Home" /></Link></li>
                 <li><Link to="/activityPage"><img src={activityIcon} alt="Activity" /></Link></li>
                 <li><Link to="/current-activityPage"><img src={currentActivityIcon} alt="currentActivity" /></Link></li>
                 <li><Link to="/forumPage"><img src={forumIcon} alt="forum" /></Link></li>

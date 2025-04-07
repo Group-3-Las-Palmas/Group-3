@@ -23,7 +23,7 @@ const Login = () => {
       if (data.token) {
           localStorage.setItem("token", data.token);
           console.log("Login successful, token stored.");
-          navigate("/"); // Redirect after successful login
+          navigate("/mainPage"); // Redirect after successful login
       } else {
           // Handle cases where login is successful but no token is returned (if possible)
           console.warn("Login successful but no token received.");
@@ -40,26 +40,30 @@ const Login = () => {
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
-        <h2>Login</h2>
+        <h2>Welcome!</h2>
         {/* Display error message if it exists */}
         {error && <ErrorMessage>{error}</ErrorMessage>}
+        <h3>Email</h3>
         <Input
           type="email"
-          placeholder="Email"
+          placeholder="Example@email.com"
           value={email}
           // Update state when email input changes
           onChange={(e) => setEmail(e.target.value)}
           required // HTML5 form validation
         />
+        <h3>Password</h3>
         <Input
           type="password"
-          placeholder="Password"
+          placeholder="Atleast 8 characters"
           value={password}
           // Update state when password input changes
           onChange={(e) => setPassword(e.target.value)}
           required // HTML5 form validation
         />
+        <a href="#">Forgot password?</a>
         <Button type="submit">Login</Button>
+        <p>Don't have an account? <a href="#">Sign up</a></p>
       </Form>
     </Container>
   );

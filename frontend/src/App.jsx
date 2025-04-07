@@ -1,6 +1,5 @@
 // import { useState, useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { NavBar } from './components/navBar/navBar.jsx'
 // import { profilePage } from './pages/profilePage.jsx'
 import { LandingPage } from './pages/landingPage.jsx'
 // import { LoginPage } from './pages/landingPage.jsx'
@@ -16,7 +15,6 @@ function App() {
     <>
       <section className='page-content'>
         <BrowserRouter>
-          <NavBar />
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/main" element={<MainPage />} />
@@ -24,6 +22,7 @@ function App() {
             <Route path="/current-activity" element={<activityPage />} />
             <Route path="/forumPage" element={<forumPage />} />
             <Route path="/profilePage" element={<profilePage />} />
+            <Route path="/mainPage" element={<mainPage />} />
           </Routes>
         </BrowserRouter>
       </section>

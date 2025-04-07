@@ -6,7 +6,26 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #FFF2D6;
+
+  a{
+    text-decoration: none;
+    color: #64A46C;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  h2, h3{
+    color: #1E311F;
+  }
+  
+  button{
+    color: #1E311F;
+  }
+
+  p{
+    color: #1E311F;
+  }
 `;
 
 export const Form = styled.form`
@@ -15,7 +34,7 @@ export const Form = styled.form`
   background: white;
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #FFF2D6;
 `;
 
 export const Input = styled.input`
@@ -26,16 +45,13 @@ export const Input = styled.input`
 `;
 
 export const Button = styled.button`
-  background-color: #007bff;
+  background-color: #FAC462;
   color: white;
   padding: 0.8rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 
-  &:hover {
-    background-color: #0056b3;
-  }
 `;
 
 export const ErrorMessage = styled.p`
