@@ -23,7 +23,7 @@ const Login = () => {
       if (data.token) {
           localStorage.setItem("token", data.token);
           console.log("Login successful, token stored.");
-          navigate("/"); // Redirect after successful login
+          navigate("/mainPage"); // Redirect after successful login
       } else {
           // Handle cases where login is successful but no token is returned (if possible)
           console.warn("Login successful but no token received.");
