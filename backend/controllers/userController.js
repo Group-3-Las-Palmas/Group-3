@@ -66,7 +66,7 @@ export const updateUser = async (req, res) => {
     // Verify fields
     if (Object.keys(extraFields).length > 0) {
       return res.status(400).json({
-        message: "Only 'username' and 'password' can be updated.",
+        message: "Incorrect fields.",
       });
     }
 
@@ -95,7 +95,6 @@ export const updateUser = async (req, res) => {
     if (username !== undefined) updateFields.username = username;
     if (password !== undefined) updateFields.password = await bcrypt.hash(password, 10);
     console.log(`DEBUG: Hash generado: ${updateFields.password}`);
-
     const updatedUser = await existingUser.update(updateFields);
 
     res.status(200).json({
