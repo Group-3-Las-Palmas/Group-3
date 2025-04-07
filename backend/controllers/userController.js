@@ -63,14 +63,14 @@ export const updateUser = async (req, res) => {
 
     const { username, password, ...extraFields } = req.body;
 
-    // Se permiten únicamente los campos 'username' y 'email'
+    // Verify fields
     if (Object.keys(extraFields).length > 0) {
       return res.status(400).json({
         message: "Only 'username' and 'password' can be updated.",
       });
     }
 
-    // Validar que 'username' y 'email' no sean cadenas vacías (si se envían)
+    // Verify empty fields
     if (username !== undefined && username.trim() === "") {
       return res.status(400).json({
         message: "The 'username' field cannot be empty.",
@@ -83,14 +83,14 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    // Buscar al usuario existente usando la clave primaria
+    // Check user
     const existingUser = await User.findByPk(userId);
 
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Actualizar únicamente los campos permitidos
+    // Update only existing fields
     const updateFields = {};
     if (username !== undefined) updateFields.username = username;
     if (password !== undefined) updateFields.password = await bcrypt.hash(password, 10);
