@@ -1,9 +1,9 @@
 // import { useState, useEffect } from 'react'
-// import { BrowserRouter, Route, Routes } from 'react-router-dom'
-// import { NavBar } from './components/navBar/navBar.jsx'
-// import { profilePage } from './pages/profilePage'
-// import { landingPage } from './pages/homePage'
-import { LoginPage } from './pages/loginPage.jsx'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { NavBar } from './components/navBar/navBar.jsx'
+// import { profilePage } from './pages/profilePage.jsx'
+ import { LandingPage } from './pages/landingPage.jsx'
+// import { LoginPage } from './pages/landingPage.jsx'
 // import { forumPage } from './pages/forumPage'
 // import { activityPage } from './pages/activityPage'
 
@@ -11,7 +11,16 @@ function App() {
 
   return (
     <>
-      <LoginPage />
+      <BrowserRouter>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/activityPage" element={<activityPage />} />
+          <Route path="/current-activity" element={<activityPage />} />
+          <Route path="/forumPage" element={<forumPage />} />
+          <Route path="/profilePage" element={<profilePage />} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
