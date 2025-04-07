@@ -83,7 +83,7 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    // Buscar al usuario existente usando la clave primaria
+    // Check user
     const existingUser = await User.findByPk(userId);
 
     if (!existingUser) {

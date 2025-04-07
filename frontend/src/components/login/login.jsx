@@ -1,6 +1,9 @@
+// Group-3/frontend/src/components/login/login.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Form, Input, Button, ErrorMessage } from "./loginStyled.js";
+// Import the specific service function needed
+import { loginUser } from "../../services/apiServices.jsz";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,25 +13,27 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError(""); // Clear previous errors
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      // Use the imported service function instead of fetch
+      const data = await loginUser(email, password);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
+      // Assuming the token is returned in the 'token' property of the response data
+      if (data.token) {
+          localStorage.setItem("token", data.token);
+          console.log("Login successful, token stored.");
+          navigate("/dashboard"); // Redirect after successful login
+      } else {
+          // Handle cases where login is successful but no token is returned (if possible)
+          console.warn("Login successful but no token received.");
+          setError("Login completed but couldn't retrieve session token.");
       }
 
-      localStorage.setItem("token", data.token);
-      navigate("/dashboard"); // Redirect after login
     } catch (err) {
-      setError(err.message);
+      // Display the error message thrown by the service (or a default)
+      setError(err.message || "Login failed. Please check your credentials.");
+      console.error("Login component error:", err);
     }
   };
 
@@ -36,20 +41,23 @@ const Login = () => {
     <Container>
       <Form onSubmit={handleSubmit}>
         <h2>Login</h2>
+        {/* Display error message if it exists */}
         {error && <ErrorMessage>{error}</ErrorMessage>}
         <Input
           type="email"
           placeholder="Email"
           value={email}
+          // Update state when email input changes
           onChange={(e) => setEmail(e.target.value)}
-          required
+          required // HTML5 form validation
         />
         <Input
           type="password"
           placeholder="Password"
           value={password}
+          // Update state when password input changes
           onChange={(e) => setPassword(e.target.value)}
-          required
+          required // HTML5 form validation
         />
         <Button type="submit">Login</Button>
       </Form>
