@@ -6,23 +6,25 @@ import { LandingPage } from './pages/landingPage.jsx'
 // import { forumPage } from './pages/forumPage'
 // import { activityPage } from './pages/activityPage'
 import './App.scss'
+import { Layout } from './layout/Layout.jsx'
 
 function App() {
 
   return (
     <>
-      <section className='page-content'>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/activityPage" element={<activityPage />} />
-            <Route path="/current-activity" element={<activityPage />} />
-            <Route path="/forumPage" element={<forumPage />} />
-            <Route path="/profilePage" element={<profilePage />} />
-            <Route path="/mainPage" element={<mainPage />} />
-          </Routes>
-        </BrowserRouter>
-      </section>
+
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<LandingPage />} />
+          <Route path="/" element={<Layout />}>
+              <Route path="/activityPage" element={<activityPage />} />
+              <Route path="/current-activity" element={<activityPage />} />
+              <Route path="/forumPage" element={<forumPage />} />
+              <Route path="/profilePage" element={<profilePage />} />
+              <Route path="/mainPage" element={<mainPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
