@@ -1,12 +1,7 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import NavBar from "../components/navBar/navBar";
+import Login from "../components/login/login";
 
 export const LandingPage = () => {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route element={<NavBar />}></Route>
-            </Routes>
-        </BrowserRouter>
+        <Login />
     )
-}
+};
