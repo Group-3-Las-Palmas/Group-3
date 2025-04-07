@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Form, Input, Button, ErrorMessage } from "./loginStyled.js";
 // Import the specific service function needed
-import { loginUser } from "../../services/apiServices.jsz";
+import { loginUser } from "../../services/apiServices.js";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +23,7 @@ const Login = () => {
       if (data.token) {
           localStorage.setItem("token", data.token);
           console.log("Login successful, token stored.");
-          navigate("/dashboard"); // Redirect after successful login
+          navigate("/"); // Redirect after successful login
       } else {
           // Handle cases where login is successful but no token is returned (if possible)
           console.warn("Login successful but no token received.");
