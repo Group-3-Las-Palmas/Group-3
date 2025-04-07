@@ -10,7 +10,6 @@ import exercisesRoutes from './routes/exercisesRoutes.js';
 import rewardsRoutes from './routes/rewardsRoutes.js';
 import userExercisesRoutes from './routes/userExercisesRoutes.js';
 import authRoutes from './routes/authRoutes.js';
-import rewardsRoutes from './routes/rewardsRoutes.js';
 
 import './models/index.js'; // Import relations
 
