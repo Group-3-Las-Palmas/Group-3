@@ -61,7 +61,7 @@ export const updateUser = async (req, res) => {
     // Ahora obtenemos el ID desde los parámetros de ruta
     const userId = req.params.id;
 
-    const { username, email, password, ...extraFields } = req.body;
+    const { username, password, ...extraFields } = req.body;
 
     // Verify fields
     if (Object.keys(extraFields).length > 0) {
@@ -77,19 +77,13 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    if (email !== undefined && email.trim() === "") {
-      return res.status(400).json({
-        message: "The 'email' field cannot be empty.",
-      });
-    }
-
-    if (password !== undefined && password.trim() === "") {
+    if (password !== undefined && password === "") {
       return res.status(400).json({
         message: "The 'password' field cannot be empty.",
       });
     }
 
-    // Check user
+    // Buscar al usuario existente usando la clave primaria
     const existingUser = await User.findByPk(userId);
 
     if (!existingUser) {
@@ -99,16 +93,13 @@ export const updateUser = async (req, res) => {
     // Update only existing fields
     const updateFields = {};
     if (username !== undefined) updateFields.username = username;
-    if (email !== undefined) updateFields.email = email;
-    // if (password !== undefined) updateFields.password = password
-
+    if (password !== undefined) updateFields.password = await bcrypt.hash(password, 10);
+    console.log(`DEBUG: Hash generado: ${updateFields.password}`);
     const updatedUser = await existingUser.update(updateFields);
 
     res.status(200).json({
       id: updatedUser.user_id,
       username: updatedUser.username,
-      email: updatedUser.email,
-      // password: bcrypt.hash(updatedUser.password, 10)
     });
   } catch (error) {
     console.error("Error updating user:", error);
