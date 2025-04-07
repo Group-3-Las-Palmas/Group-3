@@ -2,25 +2,28 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { NavBar } from './components/navBar/navBar.jsx'
 // import { profilePage } from './pages/profilePage.jsx'
- import { LandingPage } from './pages/landingPage.jsx'
+import { LandingPage } from './pages/landingPage.jsx'
 // import { LoginPage } from './pages/landingPage.jsx'
 // import { forumPage } from './pages/forumPage'
 // import { activityPage } from './pages/activityPage'
+import './App.scss'
 
 function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <NavBar />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/activityPage" element={<activityPage />} />
-          <Route path="/current-activity" element={<activityPage />} />
-          <Route path="/forumPage" element={<forumPage />} />
-          <Route path="/profilePage" element={<profilePage />} />
-        </Routes>
-      </BrowserRouter>
+      <section className='page-content'>
+        <BrowserRouter>
+          <NavBar />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/activityPage" element={<activityPage />} />
+            <Route path="/current-activity" element={<activityPage />} />
+            <Route path="/forumPage" element={<forumPage />} />
+            <Route path="/profilePage" element={<profilePage />} />
+          </Routes>
+        </BrowserRouter>
+      </section>
     </>
   )
 }
