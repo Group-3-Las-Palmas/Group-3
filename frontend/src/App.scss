@@ -1,0 +1,27 @@
+$breakpoint-mobile: 768px;
+
+// Reset/normalize
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+// Grid container
+.page-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 1rem;
+
+  // Responsiv til større skærme
+  @media (min-width: $breakpoint-mobile) {
+    grid-template-columns: repeat(2, 1fr); // eller 3, alt efter hvad du vil
+  }
+}

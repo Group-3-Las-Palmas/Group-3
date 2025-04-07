@@ -1,22 +1,25 @@
 import models from "../models/index.js";
 
-const { Comment, User, Exercise } = models;
+const { Comment, User, Post } = models;
 
 //Get comments
 export const getComments = async (req, res) => {
   try {
     const comments = await Comment.findAll({
-      attributes: ["id", "content", "create_at", "user_id", "exercise_id"],
+      attributes: ["id", "content", "create_at", "user_id", "post_id"],
       include: [
         {
           model: User,
           attributes: ["username"],
+          required: false,
         },
         {
-          model: Exercise,
-          attributes: ["title"],
+          model: Post,
+          attributes: ["content"],
+          required: false,
         },
-      ]
+      ],
+      order: [["create_at", "DESC"]],
     });
     res.json(comments);
   } catch (error) {
@@ -30,17 +33,20 @@ export const getCommentById = async (req, res) => {
 
   try {
     const comment = await Comment.findByPk(id, {
-      attributes: ["id", "content", "create_at", "user_id", "exercise_id"],
+      attributes: ["id", "content", "create_at", "user_id", "post_id"],
       include: [
         {
           model: User,
           attributes: ["username"],
+          required: false,
         },
         {
-          model: Exercise,
-          attributes: ["title"],
+          model: Post,
+          attributes: ["content"],
+          required: false,
         },
       ],
+      order: [["create_at", "DESC"]],
     });
 
     if (!comment) {
@@ -59,33 +65,30 @@ export const createComment = async (req, res) => {
     return res.status(401).json({ error: "Authentication required." });
   }
 
-  const { content, exercise_id } = req.body;
+  const { content, post_id } = req.body;
   const userId = req.user.user_id;
 
   if (!content || content.trim() === "") {
     return res.status(400).json({ error: "Comment content is required." });
   }
 
+  if (post_id === undefined || post_id === null) {
+    return res.status(400).json({ error: "post_id is required in the request body." });
+ }
+
   try {
-    // Validate if exercise exists
-    const exerciseExists = await Exercise.findByPk(exercise_id);
-    if (!exerciseExists) {
-      return res.status(404).json({ error: "Exercise not found" });
+    const postExists  = await Post.findByPk(post_id);
+    if (!postExists ) {
+      return res.status(404).json({ error: `Post with ID ${post_id} not found` });
     }
 
     const newComment = await Comment.create({
       user_id: userId,
-      exercise_id,
+      post_id,
       content: content.trim(),
     });
 
-    res.status(201).json({
-      id: newComment.id,
-      user_id: newComment.user_id,
-      exercise_id: newComment.exercise_id,
-      content: newComment.content,
-      create_at: newComment.create_at,
-    });
+    res.status(201).json(newComment);
   } catch (error) {
     res.status(500).json({ error: "Error creating comment" });
   }
@@ -120,13 +123,7 @@ export const updateComment = async (req, res) => {
 
     const updatedComment = await comment.update({ content: content.trim() });
 
-    res.status(200).json({
-      id: updatedComment.id,
-      user_id: updatedComment.user_id,
-      exercise_id: updatedComment.exercise_id,
-      content: updatedComment.content,
-      create_at: updatedComment.create_at,
-    });
+    res.status(200).json(updatedComment);
   } catch (error) {
     res.status(500).json({ error: "Error updating comment." });
   }
@@ -156,7 +153,9 @@ export const deleteComment = async (req, res) => {
 
     await Comment.destroy({ where: { id } });
 
-    res.status(200).json({ message: `Comment with ID ${id} successfully deleted.` });
+    res
+      .status(200)
+      .json({ message: `Comment with ID ${id} successfully deleted.` });
   } catch (error) {
     res.status(500).json({ error: "Error deleting comment" });
   }
