@@ -10,6 +10,8 @@ import exercisesRoutes from './routes/exercisesRoutes.js';
 import rewardsRoutes from './routes/rewardsRoutes.js';
 import userExercisesRoutes from './routes/userExercisesRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import './models/index.js'; // Import relations
 
@@ -17,6 +19,10 @@ dotenv.config();
 
 const app = express();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(cors()); // Enabled CORS if it is necessary
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

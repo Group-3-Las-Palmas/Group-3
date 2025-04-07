@@ -1,5 +1,6 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/authenticateToken.js';
+import { uploadProfileImage } from '../middleware/uploadMiddleware.js';
 
 import {
   getUsers,
@@ -14,7 +15,7 @@ const router = express.Router();
 
 router.get('/', authenticateToken, getUsers);
 router.post('/', authenticateToken, createUser);
-router.get('/:id', authenticateToken, getUserById);
+router.get('/:id', authenticateToken, uploadProfileImage, getUserById);
 router.put('/:id', authenticateToken, updateUser);
 
 router.delete('/:id', authenticateToken, deleteUser);
