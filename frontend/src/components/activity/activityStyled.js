@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const ActivityContainer = styled.section`
+export const MeditationContainer = styled.section`
   display: flex;
   flex-direction: row;
   align-items: center;
