@@ -14,6 +14,18 @@ export const Container = styled.div`
     font-weight: bold;
     font-size: 14px;
   }
+
+  h2, h3{
+    color: #1E311F;
+  }
+  
+  button{
+    color: #1E311F;
+  }
+
+  p{
+    color: #1E311F;
+  }
 `;
 
 export const Form = styled.form`
