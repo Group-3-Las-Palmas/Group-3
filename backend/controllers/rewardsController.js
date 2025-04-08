@@ -1,6 +1,6 @@
 import models from "../models/index.js";
+const { Reward, UserExercise, Exercise } = models;
 
-const { Reward, Exercise } = models;
 
 //Get all rewards
 export const getRewards = async (req, res) => {
@@ -44,6 +44,34 @@ export const getRewardById = async (req, res) => {
     res.status(500).json({ error: "Error retrieving reward" });
   }
 };
+
+//Get user rewards
+export const getUserRewards = async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const completed = await UserExercise.findAll({
+      where: {
+        user_id: userId
+      },
+      include: {
+        model: Exercise,
+        include: Reward
+      }
+    });
+
+    // Filter by goal reached
+    const earnedRewards = completed
+      .filter(entry => entry.completed_times >= entry.Exercise.goal)
+      .map(entry => entry.Exercise.Reward)
+
+    res.json(earnedRewards);
+  } catch (error) {
+    console.error('Error fetching rewards:', error);
+    res.status(500).json({ error: 'Error fetching user rewards' });
+  }
+};
+
 
 // Create a new reward
 export const createReward = async (req, res) => {

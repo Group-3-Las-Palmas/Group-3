@@ -18,7 +18,7 @@ const FavouriteExercises = ({ userId }) => {
 
   return (
     <div className="favourites">
-      <h2>EFavourite Exercises</h2>
+      <h2>Favourite Exercises</h2>
       <ul>
         {favourites.map((item) => (
           <li key={item.exercise_id}>
