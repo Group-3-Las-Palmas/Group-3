@@ -1,5 +1,5 @@
 import { MeditationContainer, MeditationDesc } from "./activityStyled";
-import MeditationIcon from "../../assets/meditation.svg";
+import MeditationIcon from "../../assets/Meditation.svg";
 import favoriteIcon from "../../assets/favoriteIcon.svg";
 import unfavoriteIcon from "../../assets/unfavoriteIcon.svg";
 import { useState } from "react";

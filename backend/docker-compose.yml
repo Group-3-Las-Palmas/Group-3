@@ -1,0 +1,20 @@
+# --- docker-compose.yml DENTRO de Group-3/backend/ ---
+version: '3.8'
+
+services:
+  # El nombre del servicio sigue siendo 'backend'
+  backend:
+    container_name: lumo-backend-compose
+    build:
+      # El contexto ahora es el directorio actual (.), porque
+      # docker-compose.yml está en la misma carpeta que el Dockerfile
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      # La ruta al archivo .env ahora es relativa a esta carpeta
+      - ./.env
+    # volumes:
+    #  - .:/usr/src/app # El '.' ahora monta la carpeta backend
+    #  - /usr/src/app/node_modules
