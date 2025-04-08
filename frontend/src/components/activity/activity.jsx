@@ -3,6 +3,7 @@ import MeditationIcon from "../../assets/meditation.svg";
 import favoriteIcon from "../../assets/favoriteIcon.svg";
 import unfavoriteIcon from "../../assets/unfavoriteIcon.svg";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export const FavoriteButton = () => {
     const [isFavorite, setIsFavorite] = useState(false);
@@ -24,7 +25,7 @@ export const Activity = () => {
         <MeditationContainer>
             <img src={MeditationIcon} alt="meditation" />
             <MeditationDesc>
-                <h4>3 minutes meditation</h4>
+                <Link to="/current-activityPage"><h4>3 minutes meditation</h4></Link>
                 <h6>To get your mind in the here and now.</h6>
             </MeditationDesc>
             <FavoriteButton />

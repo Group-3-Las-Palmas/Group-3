@@ -13,6 +13,10 @@ export const MeditationContainer = styled.section`
     display: block;
     width: 100px;
   }
+
+  h6 {
+    color : #1E3220;
+  }
 `;
 
 export const MeditationDesc = styled.div`
@@ -22,4 +26,9 @@ export const MeditationDesc = styled.div`
   justify-content: center;
   background-color: #FFF2D6;
   border-radius: 10px;
+  
+  a {
+    text-decoration: none;
+    color: #1E3220;
+  }
 `;
