@@ -18,7 +18,7 @@ function App() {
     <>
       <section className='page-content'>
         <BrowserRouter>
-          <NavBar />
+          {/* <NavBar /> */}
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/ActivityPage" element={<activityPage />} />
