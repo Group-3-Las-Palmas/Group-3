@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { LandingPage } from './pages/landingPage.jsx'
 // import { LoginPage } from './pages/landingPage.jsx'
 // import { forumPage } from './pages/forumPage'
-// import { activityPage } from './pages/activityPage'
+import { ActivityPage } from './pages/activityPage.jsx'
 import './App.scss'
 import { Layout } from './layout/Layout.jsx'
 
@@ -17,8 +17,8 @@ function App() {
         <Routes>
           <Route index element={<LandingPage />} />
           <Route path="/" element={<Layout />}>
-              <Route path="/activityPage" element={<activityPage />} />
-              <Route path="/current-activity" element={<activityPage />} />
+              <Route path="/ActivityPage" element={<ActivityPage />} />
+              <Route path="/current-activityPage" element={<current-activityPage />} />
               <Route path="/forumPage" element={<forumPage />} />
               <Route path="/profilePage" element={<profilePage />} />
               <Route path="/mainPage" element={<mainPage />} />
