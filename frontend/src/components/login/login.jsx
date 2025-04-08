@@ -16,22 +16,24 @@ const Login = () => {
     setError(""); // Clear previous errors
 
     try {
-      // Use the imported service function instead of fetch
       const data = await loginUser(email, password);
 
-      // Assuming the token is returned in the 'token' property of the response data
-      if (data.token) {
-          localStorage.setItem("token", data.token);
-          console.log("Login successful, token stored.");
-          navigate("/mainPage"); // Redirect after successful login
+      if (data.token && data.user) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        console.log("Login successful, token and user info stored.");
+        navigate("/mainPage");
+      } else if (data.token) {
+        localStorage.setItem("token", data.token);
+        console.warn(
+          "Login successful, token stored but user data missing in response."
+        );
+        navigate("/mainPage");
       } else {
-          // Handle cases where login is successful but no token is returned (if possible)
-          console.warn("Login successful but no token received.");
-          setError("Login completed but couldn't retrieve session token.");
+        console.warn("Login successful but no token received.");
+        setError("Login completed but couldn't retrieve session token.");
       }
-
     } catch (err) {
-      // Display the error message thrown by the service (or a default)
       setError(err.message || "Login failed. Please check your credentials.");
       console.error("Login component error:", err);
     }
@@ -63,7 +65,9 @@ const Login = () => {
         />
         <a href="#">Forgot password?</a>
         <Button type="submit">Login</Button>
-        <p>Don't have an account? <a href="#">Sign up</a></p>
+        <p>
+          Don't have an account? <a href="#">Sign up</a>
+        </p>
       </Form>
     </Container>
   );
