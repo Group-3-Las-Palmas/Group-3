@@ -1,7 +1,7 @@
 // import { useState, useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-// import { profilePage } from './pages/profilePage.jsx'
-import { LandingPage } from './pages/landingPage.jsx';
+import UserProfilePage from './pages/profilePage.jsx'
+import { LandingPage } from './pages/landingPage.jsx'
 // import { LoginPage } from './pages/landingPage.jsx'
 // import { forumPage } from './pages/forumPage'
 
@@ -31,7 +31,6 @@ function App() {
           </Routes>
         </BrowserRouter>
       </section>
-
     </>
   )
 }
