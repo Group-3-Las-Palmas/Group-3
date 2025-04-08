@@ -1,16 +1,16 @@
 // import { useState, useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { NavBar } from './components/navBar/navBar.jsx'
 // import { profilePage } from './pages/profilePage.jsx'
 import { LandingPage } from './pages/landingPage.jsx';
 // import { LoginPage } from './pages/landingPage.jsx'
 // import { forumPage } from './pages/forumPage'
-import { MainPage } from './pages/mainPage.jsx'
 
-import { ActivityPage } from './pages/activityPage.jsx';
-import './App.scss';
-import { Layout } from './layout/Layout.jsx';
 import { SettingsUserPage } from './pages/settingsUserPage.jsx';
+
+import { ActivityPage } from './pages/activityPage.jsx'
+import './App.scss'
+import { Layout } from './layout/Layout.jsx'
+import { MainPage } from './pages/mainPage.jsx'
 
 function App() {
 
@@ -25,8 +25,9 @@ function App() {
             <Route path="/current-activity" element={<activityPage />} />
             <Route path="/forumPage" element={<forumPage />} />
             <Route path="/profilePage" element={<profilePage />} />
-            <Route path="/mainPage" element={<mainPage />} />
             <Route path="/settingsUserPage" element={<SettingsUserPage />} />
+            <Route path="/current-activityPage" element={<current-activityPage />} />
+            <Route path="/mainPage" element={<MainPage />} />
           </Routes>
         </BrowserRouter>
       </section>
