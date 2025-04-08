@@ -1,10 +1,11 @@
 import { Activity } from "../components/activity/activity";
+import { ActivityPageContainer } from "../styles/activityPageStyled";
 
 export const ActivityPage = () => {
     return (
-        <div className="activityPage">
+        <ActivityPageContainer>
             <h1>All Activity</h1>
             <Activity />
-        </div>
+        </ActivityPageContainer>
     )
 }

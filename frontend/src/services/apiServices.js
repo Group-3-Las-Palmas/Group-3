@@ -1,74 +1,97 @@
-// Group-3/frontend/src/services/apiService.js
+// Group-3/frontend/src/services/apiServices.js
 
 
 const API_BASE_URL = "http://localhost:3000/api"; // Updated port to 3000
 
 /**
- * Handles API responses, parsing JSON or throwing an error.
- * @param {Response} response - The fetch response object.
- * @returns {Promise<any>} - The parsed response body.
- * @throws {Error} - If the response is not OK.
+ * Gestiona las respuestas de la API, parseando JSON o lanzando un error.
+ * @param {Response} response - El objeto de respuesta fetch.
+ * @returns {Promise<any>} - El cuerpo de la respuesta parseado.
+ * @throws {Error} - Si la respuesta no es OK.
  */
 const handleResponse = async (response) => {
-  // Check if the response is actually JSON before trying to parse
   const contentType = response.headers.get("content-type");
   let data;
   if (contentType && contentType.indexOf("application/json") !== -1) {
     data = await response.json();
   } else {
-    // Handle non-JSON responses if necessary, or assume error if JSON was expected
-    data = { message: await response.text() }; // Or handle differently
+    // Si no es JSON, intenta obtener el texto para el mensaje de error
+    const text = await response.text();
+    data = { message: text || `Received non-JSON response with status: ${response.status}` };
   }
 
   if (!response.ok) {
-    // Try to get a specific error message from the backend, otherwise use a generic one
+    // Lanza el mensaje de error del backend si está disponible, si no, un error genérico
     throw new Error(data.message || `HTTP error! status: ${response.status}`);
   }
-  return data;
+  return data; // Devuelve los datos si la respuesta es exitosa
 };
 
 /**
- * Logs in the user using Basic Authentication.
- * @param {string} email - The user's email.
- * @param {string} password - The user's password.
- * @returns {Promise<object>} - The backend response (including the token).
- * @throws {Error} - If login fails.
+ * Registra un nuevo usuario.
+ * @param {string} username - Nombre de usuario deseado.
+ * @param {string} email - Email del usuario.
+ * @param {string} password - Contraseña del usuario.
+ * @returns {Promise<object>} - La respuesta del backend.
+ * @throws {Error} - Si el registro falla (ej: email/usuario ya existe, error del servidor).
  */
-export const loginUser = async (email, password) => {
+export const registerUser = async (username, email, password) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: "POST", // POST is standard for login, even with Basic Auth
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: "POST",
       headers: {
-        // Encode credentials in Base64 for Basic Auth
-        Authorization: `Basic ${btoa(`${email}:${password}`)}`,
-        // 'Content-Type' might not be strictly necessary without a body for Basic Auth,
-        // but it's often good practice. Your backend middleware setup dictates this.
         "Content-Type": "application/json",
       },
-      // No 'body' needed if using Basic Auth for login as per your `authenticateBasicCredentials` middleware
+      // El cuerpo debe contener los datos del usuario a registrar
+      body: JSON.stringify({ username, email, password }),
     });
+    // Utiliza handleResponse para gestionar éxito o error
     return await handleResponse(response);
   } catch (error) {
-    console.error("Login service error:", error);
-    // Re-throw the error so the component can handle it
+    console.error("Registration service error:", error);
+    // Re-lanza el error para que el componente pueda manejarlo (ej: mostrar mensaje al usuario)
     throw error;
   }
 };
 
 /**
- * Retrieves the stored authentication token from localStorage.
- * @returns {string | null} - The token or null if it doesn't exist.
+ * Realiza el login del usuario usando autenticación Basic.
+ * @param {string} email - Email del usuario.
+ * @param {string} password - Contraseña del usuario.
+ * @returns {Promise<object>} - La respuesta del backend (incluyendo el token).
+ * @throws {Error} - Si el login falla.
+ */
+export const loginUser = async (email, password) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${btoa(`${email}:${password}`)}`,
+        "Content-Type": "application/json",
+      },
+      // No se necesita body para Basic Auth en este caso
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    console.error("Login service error:", error);
+    throw error;
+  }
+};
+
+/**
+ * Obtiene el token de autenticación almacenado en localStorage.
+ * @returns {string | null} - El token o null si no existe.
  */
 const getToken = () => {
   return localStorage.getItem("token");
 };
 
 /**
- * Makes a generic authenticated request to the API using Bearer token.
- * @param {string} endpoint - The API endpoint (e.g., '/users').
- * @param {string} method - The HTTP method (GET, POST, PUT, DELETE).
- * @param {object | null} body - The request body for POST/PUT requests.
- * @returns {Promise<any>} - The backend response.
+ * Realiza una petición autenticada genérica a la API usando token Bearer.
+ * @param {string} endpoint - El endpoint de la API (ej: '/users').
+ * @param {string} method - El método HTTP (GET, POST, PUT, DELETE, PATCH).
+ * @param {object | null} body - El cuerpo de la petición para POST/PUT/PATCH.
+ * @returns {Promise<any>} - La respuesta del backend.
  */
 export const fetchApi = async (endpoint, method = "GET", body = null) => {
   const token = getToken();
@@ -76,7 +99,6 @@ export const fetchApi = async (endpoint, method = "GET", body = null) => {
     "Content-Type": "application/json",
   };
 
-  // Add the Authorization header only if a token exists
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -87,16 +109,14 @@ export const fetchApi = async (endpoint, method = "GET", body = null) => {
   };
 
   if (body && (method === "POST" || method === "PUT" || method === "PATCH")) {
-    // Added PATCH
     config.body = JSON.stringify(body);
   }
 
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    return await handleResponse(response); // Use the centralized handler
+    return await handleResponse(response);
   } catch (error) {
     console.error(`API fetch error (${method} ${endpoint}):`, error);
-    // Re-throw for component-level handling if needed
     throw error;
   }
 };

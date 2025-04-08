@@ -5,7 +5,8 @@ import {
   createReward,
   updateReward,
   deleteReward,
-  getRewardById
+  getRewardById,
+  getUserRewards
 } from '../controllers/rewardsController.js';
 
 import { authenticateToken } from '../middleware/authenticateToken.js';
@@ -17,5 +18,6 @@ router.post('/', authenticateToken, createReward);
 router.get('/:id', authenticateToken, getRewardById);
 router.put('/:id', authenticateToken, updateReward);
 router.delete('/:id', authenticateToken, deleteReward);
+router.get('/user/:userId', authenticateToken, getUserRewards); // get user rewards
 
 export default router;
