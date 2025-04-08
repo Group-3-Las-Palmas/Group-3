@@ -18,7 +18,7 @@ function App() {
           <Route index element={<LandingPage />} />
           <Route path="/" element={<Layout />}>
               <Route path="/ActivityPage" element={<ActivityPage />} />
-              <Route path="/current-activity" element={<activityPage />} />
+              <Route path="/current-activityPage" element={<current-activityPage />} />
               <Route path="/forumPage" element={<forumPage />} />
               <Route path="/profilePage" element={<profilePage />} />
               <Route path="/mainPage" element={<mainPage />} />
