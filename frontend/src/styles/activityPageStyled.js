@@ -5,8 +5,12 @@ export const ActivityPageContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     background-color: #FFF2D6;
     margin: 0;
     padding: 0;
+
+    h1 {
+        color: #1E3220;
+        margin: 5rem 0;
+    }
 `
