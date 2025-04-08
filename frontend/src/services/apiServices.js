@@ -130,7 +130,7 @@ export const getMindfulnessQuote = async () => {
       }
     });
 
-    if (!response.ok) throw new Error('No quote!');
+    if (!response.ok) throw new Error('No quote today, sorry!');
 
     const data = await response.json();
     return data;
