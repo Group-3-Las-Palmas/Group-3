@@ -1,7 +1,6 @@
-// Group-3/frontend/src/services/apiServices.js
-
-
-const API_BASE_URL = "http://localhost:3000/api"; // Updated port to 3000
+// URL base para las llamadas a la API
+const API_BASE_URL = "http://localhost:3000/api";
+export const SERVER_BASE_URL = "http://localhost:3000";
 
 /**
  * Gestiona las respuestas de la API, parseando JSON o lanzando un error.

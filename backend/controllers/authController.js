@@ -7,7 +7,9 @@ import { UniqueConstraintError } from "sequelize";
 const { User } = models;
 
 // URL relativa a tu imagen predeterminada
-const DEFAULT_PROFILE_IMAGE_URL = "../uploads/without_image.webp"; // ¡Asegúrate que este archivo exista!
+// Asegúrate que esta ruta es correcta desde la raíz del servidor web
+// y que el archivo existe en /backend/uploads/
+const DEFAULT_PROFILE_IMAGE_URL = "/uploads/without_image.webp";
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -27,7 +29,7 @@ export const register = async (req, res) => {
       return res.status(409).json({ message: `Email already exists.` });
     }
 
-    // Verifica si el nombre de usuario ya existe (si es único en tu modelo)
+    // Verifica si el nombre de usuario ya existe
     const existingUserByUsername = await User.findOne({
       where: { username: username },
     });
@@ -39,27 +41,25 @@ export const register = async (req, res) => {
 
     // Crear el usuario incluyendo la URL de la imagen de perfil predeterminada
     const newUser = await User.create({
-      username: username.trim(), // <-- Quitar espacios extra
-      email: email.toLowerCase().trim(), // <-- Convertir a minúsculas y quitar espacios
+      username: username.trim(),
+      email: email.toLowerCase().trim(),
       password: hashedPassword,
-      profile_image_url: DEFAULT_PROFILE_IMAGE_URL, // <-- Asignar la imagen por defecto aquí
+      profile_image_url: DEFAULT_PROFILE_IMAGE_URL, // Asigna la default
     });
 
-    // Devolver también la URL de la imagen en la respuesta
+    // Devolver datos del nuevo usuario
     res.status(201).json({
       message: "User registered successfully",
       user: {
         user_id: newUser.user_id,
         username: newUser.username,
         email: newUser.email,
-        profile_image_url: newUser.profile_image_url, // <-- Incluir en la respuesta
+        profile_image_url: newUser.profile_image_url, // Incluye la URL default
       },
     });
   } catch (error) {
     console.error("Error en register:", error);
-    // Manejo de errores de restricción única (email o username)
     if (error instanceof UniqueConstraintError) {
-      // Determinar qué campo causó el error si es posible (puede requerir inspeccionar error.fields)
       const field = error.fields && Object.keys(error.fields)[0];
       const message = field
         ? `${field.charAt(0).toUpperCase() + field.slice(1)} already exists.`
@@ -72,29 +72,29 @@ export const register = async (req, res) => {
   }
 };
 
-// La función login no necesita cambios para esto
+// Función login (correcta como está)
 export const login = async (req, res) => {
-  const user = req.user;
+  const user = req.user; // Usuario obtenido del middleware authenticateBasicCredentials
   const payload = {
     user_id: user.user_id,
     username: user.username,
   };
   const secret = process.env.JWT_SECRET;
   if (!secret) {
-    console.error("JWT_SECRET no está definido.");
-    return res.status(500).json({ message: "Error interno del servidor." });
+    console.error("JWT_SECRET is not defined.");
+    return res.status(500).json({ message: "Internal server error." });
   }
-  const token = jwt.sign(payload, secret, { expiresIn: "1h" });
+  const token = jwt.sign(payload, secret, { expiresIn: "1h" }); // Token de 1 hora
 
+  // Respuesta de login exitoso
   res.json({
     message: "Login successful",
-    token,
-    user: {
-      // Devolver toda la info relevante del usuario, incluida la imagen
+    token, // El token JWT
+    user: { // Los datos del usuario
       user_id: user.user_id,
       username: user.username,
       email: user.email,
-      profile_image_url: user.profile_image_url, // <-- Añadido aquí también
+      profile_image_url: user.profile_image_url, // La URL de imagen actual
     },
   });
 };
