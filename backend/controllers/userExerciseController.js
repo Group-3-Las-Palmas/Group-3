@@ -33,6 +33,31 @@ export const getUserExerciseById = async (req, res) => {
   }
 };
 
+//Get favourites exercises by user id
+export const getFavouritesByUser = async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const favourites = await UserExercise.findAll({
+      where: {
+        user_id: userId,
+        favourite: true
+      },
+      include: [
+        {
+          model: Exercise,
+          attributes: ['exercise_id', 'title', 'description', 'time', 'category']
+        }
+      ]
+    });
+
+    res.json(favourites);
+  } catch (error) {
+    console.error("Error fetching favourites:", error);
+    res.status(500).json({ error: 'Error fetching favourite exercises' });
+  }
+};
+
 //Create a new userExercise
 export const createUserExercise = async (req, res) => {
     const { user_id, exercise_id, completed_times, is_favourite } = req.body;
