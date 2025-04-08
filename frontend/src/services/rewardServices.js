@@ -12,6 +12,16 @@ export const getRewardById = async (id) => {
   return response.data;
 };
 
+export const getUserRewards = async (userId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching rewards', error);
+    throw error;
+  }
+};
+
 export const createReward = async (rewardData) => {
   const response = await axios.post(API_URL, rewardData);
   return response.data;
