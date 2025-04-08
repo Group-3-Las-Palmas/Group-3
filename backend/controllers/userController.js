@@ -83,6 +83,13 @@ export const updateUser = async (req, res) => {
       });
     }
 
+    let profileImageUrl = existingUser.profile_image_url;
+
+    if (file) {
+      profileImageUrl = `/uploads/${file.filename}`;
+      console.log(`DEBUG: Nueva imagen subida: ${profileImageUrl}`);
+    }
+
     // Check user
     const existingUser = await User.findByPk(userId);
 
@@ -93,8 +100,22 @@ export const updateUser = async (req, res) => {
     // Update only existing fields
     const updateFields = {};
     if (username !== undefined) updateFields.username = username;
-    if (password !== undefined) updateFields.password = await bcrypt.hash(password, 10);
+    if (password !== undefined)
+      updateFields.password = await bcrypt.hash(password, 10);
     console.log(`DEBUG: Hash generado: ${updateFields.password}`);
+    if (file) updateFields.profile_image_url = profileImageUrl;
+
+    if (Object.keys(updateFields).length > 0) {
+      console.log("DEBUG: Campos a actualizar:", updateFields);
+      if (updateFields.password)
+        console.log(`DEBUG: Hash generado: ${updateFields.password}`);
+      await existingUser.update(updateFields);
+      // Refrescar el objeto para obtener los últimos datos (incluida la nueva URL si se actualizó)
+      await existingUser.reload();
+    } else {
+      console.log("DEBUG: No hay campos para actualizar.");
+    }
+
     const updatedUser = await existingUser.update(updateFields);
 
     res.status(200).json({
@@ -103,6 +124,14 @@ export const updateUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating user:", error);
+
+    //Multer error
+    if (error instanceof multer.MulterError) {
+      return res.status(400).json({ message: `Multer error: ${error.message}`, code: error.code });
+    } else if (error.message.includes('Not an image')) {
+      return res.status(400).json({ message: error.message });
+    }
+
     res.status(500).json({ error: "Error updating user." });
   }
 };
