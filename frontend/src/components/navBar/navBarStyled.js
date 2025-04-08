@@ -2,6 +2,15 @@ import styled from "styled-components";
 
 export const NavBarContainer = styled.nav`
   background-color: #FFC965;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  position: sticky;
+bottom: 0;
+left: 0;
+right: 0;
+z-index: 999;
+
 
   ul {
     display: flex;
