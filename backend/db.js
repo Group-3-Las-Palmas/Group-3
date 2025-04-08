@@ -1,7 +1,10 @@
 import { Sequelize } from "sequelize";
 
 const sequelize = new Sequelize("lumo", "root", "1234", {
-  host: "localhost",
+  //Without docker
+  // host: "localhost",
+  //docker
+  host: "host.docker.internal",
   dialect: "mysql",
   logging: false,
 });
