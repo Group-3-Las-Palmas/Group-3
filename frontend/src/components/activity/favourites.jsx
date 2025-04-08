@@ -1,4 +1,5 @@
-import { getFavouriteExercisesByUser } from '../services/userExerciseService';
+import { getFavouriteExercisesByUser } from '../../services/userExerciseServices';
+import { useState, useEffect } from "react";
 
 const FavouriteExercises = ({ userId }) => {
   const [favourites, setFavourites] = useState([]);
@@ -18,7 +19,6 @@ const FavouriteExercises = ({ userId }) => {
 
   return (
     <div className="favourites">
-      <h2>Favourite Exercises</h2>
       <ul>
         {favourites.map((item) => (
           <li key={item.exercise_id}>
