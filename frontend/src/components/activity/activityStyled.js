@@ -1,12 +1,18 @@
 import styled from "styled-components";
 
-export const ActivityContainer = styled.section`
+export const MeditationContainer = styled.section`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   height: 100vh;
   background-color: #FFF2D6;
+
+  img {
+    display: block;
+    margin: 0 auto;
+    width: 100px;
+  }
 `;
 
 export const MeditationDesc = styled.div`
