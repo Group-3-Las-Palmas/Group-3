@@ -183,7 +183,6 @@ export const UsernameBox = styled.div`
   border: 1px solid #e0e0e0;
   margin-top: 0.75rem; /* Reducido de 1rem */
   margin-bottom: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   width: 85%;
   max-width: 260px;
   display: flex;
