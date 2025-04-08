@@ -24,7 +24,7 @@ Comment.belongsTo(Post, { foreignKey: 'post_id' });
 
 // Exercise associations
 Exercise.hasMany(UserExercise, { foreignKey: 'exercise_id' });
-Exercise.hasMany(Reward, { foreignKey: 'exercise_id' });
+Exercise.hasOne(Reward, { foreignKey: 'exercise_id' });
 
 // UserExercise associations (Join Table)
 UserExercise.belongsTo(User, { foreignKey: 'user_id' });
