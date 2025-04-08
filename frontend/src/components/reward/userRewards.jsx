@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getUserRewards } from '../services/rewardService';
+import { getUserRewards } from '../../services/rewardServices';
 
 const UserRewards = ({ userId }) => {
   const [rewards, setRewards] = useState([]);
@@ -19,7 +19,6 @@ const UserRewards = ({ userId }) => {
 
   return (
     <div className="rewards">
-      <h2>Rewards Achieved</h2>
       <div className="flex flex-wrap gap-4">
         {rewards.map(reward => (
           <div key={reward.reward_id} className="text-center">
