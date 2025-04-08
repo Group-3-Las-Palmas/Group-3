@@ -54,6 +54,15 @@ const SettingsUserComponent = () => {
   // Estado para confirmación inline
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
+  // --- Handlers --- (sin cambios)
+
+  const handleLogout = useCallback(() => {
+    console.log("Logging out...");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  }, [navigate]);
+
   // Efecto para cargar datos iniciales (sin cambios)
   useEffect(() => {
     const fetchUserData = async () => {
@@ -99,15 +108,6 @@ const SettingsUserComponent = () => {
     };
     fetchUserData();
   }, [handleLogout]);
-
-  // --- Handlers --- (sin cambios)
-
-  const handleLogout = useCallback(() => {
-    console.log("Logging out...");
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/");
-  }, [navigate]);
 
   const handleEditUsernameClick = () => {
     if (isBusy) return;
