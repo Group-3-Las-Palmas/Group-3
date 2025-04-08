@@ -119,3 +119,48 @@ export const fetchApi = async (endpoint, method = "GET", body = null) => {
     throw error;
   }
 };
+
+// --- Examples of specific API functions using fetchApi ---
+
+// Example: Get all posts (requires token)
+export const getPosts = async () => {
+  return await fetchApi("/posts"); // Defaults to GET
+};
+
+// Example: Create a new post (requires token)
+export const createPost = async (content) => {
+  return await fetchApi("/posts", "POST", { content });
+};
+
+// Example: Get user data by ID (requires token)
+export const getUserById = async (userId) => {
+  return await fetchApi(`/users/${userId}`);
+};
+
+
+
+export const getMindfulnessQuote = async () => {
+  try {
+    const response = await fetch('https://metaapi-mindfulness-quotes.p.rapidapi.com/v1/mindfulness', {
+      method: 'GET',
+      headers: {
+        'x-rapidapi-host': 'metaapi-mindfulness-quotes.p.rapidapi.com',
+        'x-rapidapi-key': 'c484c9e532msh2f0aec8a41c9b56p1a057cjsn41d56c80bc5a'
+      }
+    });
+
+    if (!response.ok) throw new Error('No quote today, sorry!');
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching mindfulness quote:', error);
+    return null;
+  }
+};
+
+// Add more functions for comments, exercises, users, etc. following this pattern
+// Example: Get exercises
+// export const getExercises = async () => {
+//     return await fetchApi('/exercises');
+// };
