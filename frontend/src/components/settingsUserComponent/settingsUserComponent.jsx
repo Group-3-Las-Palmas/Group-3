@@ -1,15 +1,30 @@
 // Group-3/frontend/src/components/settingsUserComponent/settingsUserComponent.jsx
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  SettingsUserContainer, ProfileImage, ImagePlaceholder, UsernameBox, LogoutButton,
-  EditUsernameForm, UsernameInput, EditButtonsContainer, ActionButton, EditIcon, ErrorText,
-  FileInput, UploadButtonsContainer, DeleteButton,
+  SettingsUserContainer,
+  ProfileImage,
+  ImagePlaceholder,
+  UsernameBox,
+  LogoutButton,
+  EditUsernameForm,
+  UsernameInput,
+  EditButtonsContainer,
+  ActionButton,
+  EditIcon,
+  ErrorText,
+  FileInput,
+  UploadButtonsContainer,
+  DeleteButton,
   DeleteConfirmContainer,
-  BottomButtonsContainer // <--- Importado para el nuevo layout de botones
+  BottomButtonsContainer,
 } from "./settingsUserStyled.js";
-import { getUserById, updateUser, updateUserProfile } from "../../services/userServices.js";
+import {
+  getUserById,
+  updateUser,
+  updateUserProfile,
+} from "../../services/userServices.js";
 import { SERVER_BASE_URL } from "../../services/apiServices.js";
 
 const FRONTEND_DEFAULT_IMAGE_PATH = "/uploads/without_image.webp";
@@ -57,7 +72,8 @@ const SettingsUserComponent = () => {
 
       try {
         const storedUserString = localStorage.getItem("user");
-        if (!storedUserString) throw new Error("No user info found. Please log in.");
+        if (!storedUserString)
+          throw new Error("No user info found. Please log in.");
         const storedUser = JSON.parse(storedUserString);
         userId = storedUser?.user_id;
         if (!userId) throw new Error("User ID not found. Please log in again.");
@@ -65,32 +81,36 @@ const SettingsUserComponent = () => {
         const freshUserData = await getUserById(userId);
         setUserData(freshUserData);
         setEditableUsername(freshUserData.username);
-
       } catch (err) {
         console.error("Error fetching user data:", err);
         const errorMessage = err.message || "Could not load user data.";
         setError(errorMessage);
-        if (errorMessage.includes("401") || errorMessage.includes("403") || errorMessage.includes("log in") || errorMessage.includes("ID not found")) {
-           handleLogout();
+        if (
+          errorMessage.includes("401") ||
+          errorMessage.includes("403") ||
+          errorMessage.includes("log in") ||
+          errorMessage.includes("ID not found")
+        ) {
+          handleLogout();
         }
       } finally {
         setLoading(false);
       }
     };
     fetchUserData();
-  }, []);
+  }, [handleLogout]);
 
   // --- Handlers --- (sin cambios)
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     console.log("Logging out...");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/");
-  };
+  }, [navigate]);
 
   const handleEditUsernameClick = () => {
-     if (isBusy) return;
+    if (isBusy) return;
     setEditableUsername(userData?.username || "");
     setIsEditingUsername(true);
     setUsernameUpdateError(null);
@@ -118,7 +138,9 @@ const SettingsUserComponent = () => {
     setIsUpdatingUsername(true);
     setUsernameUpdateError(null);
     try {
-      const updatedUserResponse = await updateUser(userData.user_id, { username: newUsername });
+      const updatedUserResponse = await updateUser(userData.user_id, {
+        username: newUsername,
+      });
       setUserData(updatedUserResponse);
       localStorage.setItem("user", JSON.stringify(updatedUserResponse));
       setIsEditingUsername(false);
@@ -136,18 +158,18 @@ const SettingsUserComponent = () => {
   };
 
   const handleFileChange = (event) => {
-     if (isBusy) return;
+    if (isBusy) return;
     const file = event.target.files?.[0];
     if (file) {
-      if (!file.type.startsWith('image/')) {
-        setImageUploadError('Please select an image file.');
+      if (!file.type.startsWith("image/")) {
+        setImageUploadError("Please select an image file.");
         setSelectedFile(null);
         setPreviewUrl(null);
         return;
       }
       const maxSize = 5 * 1024 * 1024; // 5MB
       if (file.size > maxSize) {
-        setImageUploadError('Image is too large (max 5MB).');
+        setImageUploadError("Image is too large (max 5MB).");
         setSelectedFile(null);
         setPreviewUrl(null);
         return;
@@ -157,7 +179,9 @@ const SettingsUserComponent = () => {
       setDeleteImageError(null);
       setIsConfirmingDelete(false);
       const reader = new FileReader();
-      reader.onloadend = () => { setPreviewUrl(reader.result); };
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+      };
       reader.readAsDataURL(file);
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -176,9 +200,12 @@ const SettingsUserComponent = () => {
     setImageUploadError(null);
     setDeleteImageError(null);
     const formData = new FormData();
-    formData.append('profileImage', selectedFile);
+    formData.append("profileImage", selectedFile);
     try {
-      const updatedUserResponse = await updateUserProfile(userData.user_id, formData);
+      const updatedUserResponse = await updateUserProfile(
+        userData.user_id,
+        formData
+      );
       setUserData(updatedUserResponse);
       localStorage.setItem("user", JSON.stringify(updatedUserResponse));
       setSelectedFile(null);
@@ -202,7 +229,14 @@ const SettingsUserComponent = () => {
   };
 
   const confirmDeleteImage = async () => {
-    if (!userData || !userData.user_id || isUploadingImage || isUpdatingUsername || isDeletingImage) return;
+    if (
+      !userData ||
+      !userData.user_id ||
+      isUploadingImage ||
+      isUpdatingUsername ||
+      isDeletingImage
+    )
+      return;
     setIsDeletingImage(true);
     setDeleteImageError(null);
     setImageUploadError(null);
@@ -211,7 +245,9 @@ const SettingsUserComponent = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
 
     try {
-      const updatedUserResponse = await updateUser(userData.user_id, { profile_image_url: null });
+      const updatedUserResponse = await updateUser(userData.user_id, {
+        profile_image_url: null,
+      });
       setUserData(updatedUserResponse);
       localStorage.setItem("user", JSON.stringify(updatedUserResponse));
     } catch (err) {
@@ -231,21 +267,45 @@ const SettingsUserComponent = () => {
   // --- Fin Handlers ---
 
   // Determinar si alguna acción está en progreso
-  const isBusy = isUpdatingUsername || isUploadingImage || isDeletingImage || isConfirmingDelete;
+  const isBusy =
+    isUpdatingUsername ||
+    isUploadingImage ||
+    isDeletingImage ||
+    isConfirmingDelete;
 
   // Renderizado de Loading / Error inicial / No data (con textos en inglés)
-  if (loading) return <SettingsUserContainer><p>Loading...</p></SettingsUserContainer>;
+  if (loading)
+    return (
+      <SettingsUserContainer>
+        <p>Loading...</p>
+      </SettingsUserContainer>
+    );
   if (error && !userData) {
-    return <SettingsUserContainer><p>{error}</p></SettingsUserContainer>;
+    return (
+      <SettingsUserContainer>
+        <p>{error}</p>
+      </SettingsUserContainer>
+    );
   }
   if (!userData) {
-    return <SettingsUserContainer><p>User data not found.</p></SettingsUserContainer>;
+    return (
+      <SettingsUserContainer>
+        <p>User data not found.</p>
+      </SettingsUserContainer>
+    );
   }
 
   // Determinar URL a mostrar y si es la imagen por defecto (sin cambios)
   const actualImageUrl = userData.profile_image_url;
-  const displayImageUrl = previewUrl || (actualImageUrl ? `${SERVER_BASE_URL}${actualImageUrl.startsWith("/") ? "" : "/"}${actualImageUrl}` : null);
-  const isDefaultImage = !actualImageUrl || actualImageUrl === FRONTEND_DEFAULT_IMAGE_PATH;
+  const displayImageUrl =
+    previewUrl ||
+    (actualImageUrl
+      ? `${SERVER_BASE_URL}${
+          actualImageUrl.startsWith("/") ? "" : "/"
+        }${actualImageUrl}`
+      : null);
+  const isDefaultImage =
+    !actualImageUrl || actualImageUrl === FRONTEND_DEFAULT_IMAGE_PATH;
 
   return (
     <SettingsUserContainer>
@@ -260,15 +320,24 @@ const SettingsUserComponent = () => {
 
       {/* Wrapper de Imagen (sin cambios) */}
       <div
-         onClick={!selectedFile && !isConfirmingDelete ? handleImageClick : undefined}
-         title={!selectedFile && !isConfirmingDelete ? "Click to change photo" : ""}
-         style={{ cursor: selectedFile || isBusy ? 'default' : 'pointer' }}
+        onClick={
+          !selectedFile && !isConfirmingDelete ? handleImageClick : undefined
+        }
+        title={
+          !selectedFile && !isConfirmingDelete ? "Click to change photo" : ""
+        }
+        style={{ cursor: selectedFile || isBusy ? "default" : "pointer" }}
       >
         {displayImageUrl ? (
           // Asegúrate que el alt text usa el username actual
-          <ProfileImage src={displayImageUrl} alt={`${userData?.username}'s profile`} />
+          <ProfileImage
+            src={displayImageUrl}
+            alt={`${userData?.username}'s profile`}
+          />
         ) : (
-          <ImagePlaceholder><span>No photo</span></ImagePlaceholder>
+          <ImagePlaceholder>
+            <span>No photo</span>
+          </ImagePlaceholder>
         )}
       </div>
 
@@ -277,18 +346,19 @@ const SettingsUserComponent = () => {
         {selectedFile && !isConfirmingDelete && (
           <>
             <ActionButton onClick={handleSaveUpload} disabled={isBusy}>
-              {isUploadingImage ? 'Uploading...' : 'Save photo'}
+              {isUploadingImage ? "Uploading..." : "Save photo"}
             </ActionButton>
-            <ActionButton className="cancel" onClick={handleCancelUpload} disabled={isBusy}>
+            <ActionButton
+              className="cancel"
+              onClick={handleCancelUpload}
+              disabled={isBusy}
+            >
               Cancel
             </ActionButton>
           </>
         )}
         {!selectedFile && !isDefaultImage && !isConfirmingDelete && (
-          <DeleteButton
-            onClick={handleDeleteImageClick}
-            disabled={isBusy}
-          >
+          <DeleteButton onClick={handleDeleteImageClick} disabled={isBusy}>
             Delete Photo
           </DeleteButton>
         )}
@@ -303,7 +373,7 @@ const SettingsUserComponent = () => {
               onClick={confirmDeleteImage}
               disabled={isDeletingImage}
             >
-              {isDeletingImage ? 'Deleting...' : 'Yes, delete'}
+              {isDeletingImage ? "Deleting..." : "Yes, delete"}
             </ActionButton>
             <ActionButton
               className="cancel"
@@ -318,7 +388,9 @@ const SettingsUserComponent = () => {
 
       {/* Muestra errores de Imagen (sin cambios) */}
       {!isConfirmingDelete && (
-        <ErrorText>{imageUploadError || deleteImageError || '\u00A0'}</ErrorText>
+        <ErrorText>
+          {imageUploadError || deleteImageError || "\u00A0"}
+        </ErrorText>
       )}
 
       {/* Edición de Username (textos en inglés) */}
@@ -328,15 +400,22 @@ const SettingsUserComponent = () => {
           <EditIcon
             onClick={!isBusy ? handleEditUsernameClick : undefined}
             title="Edit name"
-            style={{ cursor: isBusy ? 'not-allowed' : 'pointer', opacity: isBusy ? 0.5 : 1 }}
+            style={{
+              cursor: isBusy ? "not-allowed" : "pointer",
+              opacity: isBusy ? 0.5 : 1,
+            }}
           >
             ✏️
           </EditIcon>
         </UsernameBox>
       ) : (
         <EditUsernameForm>
-          <UsernameInput value={editableUsername} onChange={handleUsernameChange} disabled={isBusy} />
-          <ErrorText>{usernameUpdateError || '\u00A0'}</ErrorText>
+          <UsernameInput
+            value={editableUsername}
+            onChange={handleUsernameChange}
+            disabled={isBusy}
+          />
+          <ErrorText>{usernameUpdateError || "\u00A0"}</ErrorText>
           <EditButtonsContainer>
             <ActionButton
               onClick={handleSaveUsernameClick}
@@ -344,7 +423,11 @@ const SettingsUserComponent = () => {
             >
               {isUpdatingUsername ? "Saving..." : "Save"}
             </ActionButton>
-            <ActionButton className="cancel" onClick={handleCancelUsernameClick} disabled={isBusy}>
+            <ActionButton
+              className="cancel"
+              onClick={handleCancelUsernameClick}
+              disabled={isBusy}
+            >
               Cancel
             </ActionButton>
           </EditButtonsContainer>
@@ -353,17 +436,16 @@ const SettingsUserComponent = () => {
 
       {/* --- CONTENEDOR CON BOTONES BACK Y LOG OUT --- */}
       <BottomButtonsContainer>
-          {/* Botón Back añadido */}
-          <LogoutButton onClick={() => navigate('/')} disabled={isBusy}>
-              Back
-          </LogoutButton>
-          {/* Botón Log out existente */}
-          <LogoutButton onClick={handleLogout} disabled={isBusy}>
-              Log out
-          </LogoutButton>
+        {/* Botón Back añadido */}
+        <LogoutButton onClick={() => navigate("/")} disabled={isBusy}>
+          Back
+        </LogoutButton>
+        {/* Botón Log out existente */}
+        <LogoutButton onClick={handleLogout} disabled={isBusy}>
+          Log out
+        </LogoutButton>
       </BottomButtonsContainer>
       {/* --- FIN CONTENEDOR --- */}
-
     </SettingsUserContainer>
   );
 };
