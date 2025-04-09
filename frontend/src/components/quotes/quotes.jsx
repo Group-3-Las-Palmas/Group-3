@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { getMindfulnessQuote } from '../../services/apiServices';
-import { QuoteCard } from './quotesStyled';
+import { QuoteWrapper, QuoteText } from './quotesStyled';
 
-const Quotes = () => {
+const QuoteBox = () => {
   const [quote, setQuote] = useState('');
 
   useEffect(() => {
-    const fetchQuote = async () => {
-      const data = await getMindfulnessQuote();
-      if (data?.quote) {
-        setQuote(data.quote);
-      }
-    };
-    fetchQuote();
+    // Replace this with your quote API if needed
+    setQuote("Even in dark times there is hope. Every ending is a new beginning");
   }, []);
 
   return (
-    <div>
-      <QuoteCard>{quote}</QuoteCard>
-    </div>
+    <QuoteWrapper>
+      <QuoteText>{quote}</QuoteText>
+    </QuoteWrapper>
   );
 };
 
-export default Quotes;
+export default QuoteBox;
