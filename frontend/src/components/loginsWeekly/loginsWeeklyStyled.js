@@ -28,12 +28,14 @@ export const CirclesRow = styled.div`
   gap: 12px;
 `;
 
+// Change 'filled' to '$filled' here
 export const Circle = styled.div`
   width: 22px;
   height: 22px;
   border-radius: 50%;
   border: 2px solid #6ba367;
-  background-color: ${props => (props.filled ? '#65A46D' : 'transparent')};
+  /* Use the transient prop for styling */
+  background-color: ${props => (props.$filled ? '#65A46D' : 'transparent')};
 `;
 
 export const Divider = styled.div`
