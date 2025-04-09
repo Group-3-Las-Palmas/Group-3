@@ -1,3 +1,5 @@
+// frontend/src/services/apiServices.js
+
 // URL base para las llamadas a la API
 const API_BASE_URL = "http://localhost:3000/api";
 export const SERVER_BASE_URL = "http://localhost:3000";
@@ -137,6 +139,17 @@ export const getUserById = async (userId) => {
   return await fetchApi(`/users/${userId}`);
 };
 
+// --- NUEVA FUNCIÓN ---
+/**
+ * Obtiene el historial de fechas de login (YYYY-MM-DD) para el usuario autenticado.
+ * @returns {Promise<string[]>} - Un array de strings de fechas.
+ * @throws {Error} - Si la petición falla.
+ */
+export const fetchLoginHistory = async () => {
+  // Usa fetchApi que ya incluye el manejo del token Bearer
+  return await fetchApi('/auth/login-history'); // Endpoint GET
+};
+// --- FIN NUEVA FUNCIÓN ---
 
 
 export const getMindfulnessQuote = async () => {
@@ -145,7 +158,7 @@ export const getMindfulnessQuote = async () => {
       method: 'GET',
       headers: {
         'x-rapidapi-host': 'metaapi-mindfulness-quotes.p.rapidapi.com',
-        'x-rapidapi-key': 'c484c9e532msh2f0aec8a41c9b56p1a057cjsn41d56c80bc5a'
+        'x-rapidapi-key': 'c484c9e532msh2f0aec8a41c9b56p1a057cjsn41d56c80bc5a' // Considera mover esta clave a variables de entorno
       }
     });
 
@@ -158,9 +171,3 @@ export const getMindfulnessQuote = async () => {
     return null;
   }
 };
-
-// Add more functions for comments, exercises, users, etc. following this pattern
-// Example: Get exercises
-// export const getExercises = async () => {
-//     return await fetchApi('/exercises');
-// };
