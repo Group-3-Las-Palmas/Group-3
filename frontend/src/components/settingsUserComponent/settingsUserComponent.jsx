@@ -437,7 +437,7 @@ const SettingsUserComponent = () => {
       {/* --- CONTENEDOR CON BOTONES BACK Y LOG OUT --- */}
       <BottomButtonsContainer>
         {/* Botón Back añadido */}
-        <LogoutButton onClick={() => navigate("/")} disabled={isBusy}>
+        <LogoutButton onClick={() => navigate("/profilePage")} disabled={isBusy}>
           Back
         </LogoutButton>
         {/* Botón Log out existente */}
