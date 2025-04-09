@@ -10,7 +10,6 @@ export const SettingsUserContainer = styled.section`
   justify-content: center;
   padding: 1rem;
   text-align: center;
-  background-color: #fff2d6;
   box-sizing: border-box;
   width: 100vw;
   min-height: 100vh;
