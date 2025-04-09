@@ -1,4 +1,5 @@
 import { MeditationContainer, MeditationDesc, BreathingContainer, BreathingDesc, StretchingContainer, StretchingDesc } from "./activityStyled";
+import { ActivityPageContainer } from "../../styles/activityPageStyled.js";
 import MeditationIcon from "../../assets/Meditation.svg";
 import favoriteIcon from "../../assets/favoriteIcon.svg";
 import unfavoriteIcon from "../../assets/unfavoriteIcon.svg";
@@ -13,18 +14,17 @@ export const FavoriteButton = () => {
     const handleClick = () => {
         setIsFavorite(!isFavorite);
     }
+
     return (
         <button onClick={handleClick} style={({ background: "none", border: "none", cursor: "pointer", padding: "0" })}>
             <img style={({ display: "block", width: "15px", height: "15px" })} src={isFavorite ? favoriteIcon : unfavoriteIcon} alt="favourite" />
         </button>
-    )
-
+    );
 }
-
 
 export const Activity = () => {
     return (
-        <>
+        <ActivityPageContainer>
             <MeditationContainer>
                 <img src={MeditationIcon} alt="meditation" />
                 <MeditationDesc>
@@ -49,6 +49,6 @@ export const Activity = () => {
                 </StretchingDesc>
                 <FavoriteButton />
             </StretchingContainer>
-        </>
-    )
+        </ActivityPageContainer>
+    );
 }

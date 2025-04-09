@@ -6,7 +6,6 @@ export const MeditationContainer = styled.section`
   align-items: center;
   justify-content: center;
   width: 100vw;
-  background-color: #FFF2D6;
 
   img {
     display: block;
@@ -23,7 +22,6 @@ export const MeditationDesc = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #FFF2D6;
   border-radius: 10px;
   
   a {
@@ -38,7 +36,6 @@ export const BreathingContainer = styled.section`
   align-items: center;
   justify-content: center;
   width: 100vw;
-  background-color: #FFF2D6;
 
   img {
     display: block;
@@ -55,7 +52,6 @@ export const BreathingDesc = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #FFF2D6;
   border-radius: 10px;
   
   a {
@@ -70,7 +66,6 @@ export const StretchingContainer = styled.section`
   align-items: center;
   justify-content: center;
   width: 100vw;
-  background-color: #FFF2D6;
 
   img {
     display: block;
@@ -87,7 +82,6 @@ export const StretchingDesc = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #FFF2D6;
   border-radius: 10px;
   
   a {
