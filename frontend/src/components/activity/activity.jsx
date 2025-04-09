@@ -1,4 +1,4 @@
-import { MeditationContainer, MeditationDesc } from "./activityStyled";
+import { MeditationContainer, MeditationDesc, BreathingContainer, BreathingDesc, StretchingContainer, StretchingDesc } from "./activityStyled";
 import MeditationIcon from "../../assets/Meditation.svg";
 import favoriteIcon from "../../assets/favoriteIcon.svg";
 import unfavoriteIcon from "../../assets/unfavoriteIcon.svg";
