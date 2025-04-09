@@ -5,7 +5,6 @@ export const ActivityPageContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #FFF2D6;
     margin: 0;
     padding: 0;
 

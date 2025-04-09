@@ -1,38 +1,41 @@
-// import { useState, useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import UserProfilePage from './pages/profilePage.jsx'
 import { LandingPage } from './pages/landingPage.jsx'
-// import { LoginPage } from './pages/landingPage.jsx'
-// import { forumPage } from './pages/forumPage'
-
-import { SettingsUserPage } from './pages/settingsUserPage.jsx';
-
+import { SettingsUserPage } from './pages/settingsUserPage.jsx'
 import { ActivityPage } from './pages/activityPage.jsx'
-import './App.scss'
 import { Layout } from './layout/Layout.jsx'
 import { MainPage } from './pages/mainPage.jsx'
+// import { forumPage } from './pages/forumPage'
+// import { current-activityPage } from './pages/...'
+
+import './App.scss'
+import './Background.scss' // ✅ aura styles
 
 function App() {
-
   return (
-    <>
-      <section className='page-content'>
+    <div className="app-container">
+      {/* ✅ Aura-baggrund — vises globalt */}
+      <div className="aura-background" aria-hidden="true">
+        <div className="aura"></div>
+      </div>
+
+      {/* ✅ Alt synligt indhold — uanset side */}
+      <section className="page-content">
         <BrowserRouter>
           <Routes>
-            <Route index element={<LandingPage/>}/>
+            <Route index element={<LandingPage />} />
             <Route path="/" element={<Layout />}>
-            <Route path="/ActivityPage" element={<ActivityPage />} />
-            {/* <Route path="/current-activity" element={<CurrentActivityPage />} /> */}
-            <Route path="/forumPage" element={<forumPage />} />
-            <Route path="/profilePage" element={<UserProfilePage />} />
-            <Route path="/settingsUserPage" element={<SettingsUserPage />} />
-            <Route path="/current-activityPage" element={<current-activityPage />} />
-            <Route path="/mainPage" element={<MainPage />} />
+              <Route path="/ActivityPage" element={<ActivityPage />} />
+              <Route path="/forumPage" element={<div>Forum Page</div>} />
+              <Route path="/profilePage" element={<UserProfilePage />} />
+              <Route path="/settingsUserPage" element={<SettingsUserPage />} />
+              <Route path="/current-activityPage" element={<div>Current Activity Page</div>} />
+              <Route path="/mainPage" element={<MainPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
       </section>
-    </>
+    </div>
   )
 }
 
