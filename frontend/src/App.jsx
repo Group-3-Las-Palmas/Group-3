@@ -8,7 +8,7 @@ import { MainPage } from './pages/mainPage.jsx'
 // import { forumPage } from './pages/forumPage'
 
 import './App.scss'
-import './Background.scss'
+import './background.scss'
 import { CurrentActivityPage } from './pages/currentActivityPage.jsx'
 
 function App() {
