@@ -41,7 +41,7 @@ export const getFavouritesByUser = async (req, res) => {
     const favourites = await UserExercise.findAll({
       where: {
         user_id: userId,
-        favourite: true
+        is_favourite: true
       },
       include: [
         {
