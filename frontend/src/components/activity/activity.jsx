@@ -16,6 +16,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export const FavoriteButton = () => {
+
   const [isFavorite, setIsFavorite] = useState(false);
 
   const handleClick = () => {

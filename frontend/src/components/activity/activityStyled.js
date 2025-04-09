@@ -4,6 +4,7 @@ const sharedContainerStyles = `
   display: flex;
   flex-direction: row;
   align-items: center;
+
   justify-content: space-between;
   background-color: #FFF2D6;
   width: 90%;
@@ -32,8 +33,10 @@ export const MeditationDesc = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   flex: 1;
   margin-left: 16px;
+
 
   a {
     text-decoration: none;
@@ -49,7 +52,9 @@ export const MeditationDesc = styled.div`
 `;
 
 export const BreathingContainer = styled.section`
+
   ${sharedContainerStyles}
+
 
   img {
     width: 50px;
@@ -68,6 +73,7 @@ export const BreathingDesc = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   flex: 1;
   margin-left: 16px;
 
@@ -85,7 +91,9 @@ export const BreathingDesc = styled.div`
 `;
 
 export const StretchingContainer = styled.section`
+
   ${sharedContainerStyles}
+
 
   img {
     width: 50px;
@@ -104,8 +112,10 @@ export const StretchingDesc = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   flex: 1;
   margin-left: 16px;
+
 
   a {
     text-decoration: none;
