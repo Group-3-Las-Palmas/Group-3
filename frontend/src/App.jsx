@@ -18,16 +18,17 @@ function App() {
     <>
       <section className='page-content'>
         <BrowserRouter>
-          {/* <NavBar /> */}
           <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/ActivityPage" element={<activityPage />} />
-            <Route path="/current-activity" element={<activityPage />} />
+            <Route index element={<LandingPage/>}/>
+            <Route path="/" element={<Layout />}>
+            <Route path="/ActivityPage" element={<ActivityPage />} />
+            {/* <Route path="/current-activity" element={<CurrentActivityPage />} /> */}
             <Route path="/forumPage" element={<forumPage />} />
-            <Route path="/profilePage" element={<profilePage />} />
+            <Route path="/profilePage" element={<UserProfilePage />} />
             <Route path="/settingsUserPage" element={<SettingsUserPage />} />
             <Route path="/current-activityPage" element={<current-activityPage />} />
             <Route path="/mainPage" element={<MainPage />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </section>
