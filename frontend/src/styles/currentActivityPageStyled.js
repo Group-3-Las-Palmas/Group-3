@@ -8,7 +8,7 @@ export const PageWrapper = styled.div`
   padding: 2rem;
   min-height: 100vh;
   text-align: center;
-  background-color: #f7f7f7;
+  background-color: #FFF2D6;
 `;
 
 export const Title = styled.h1`
