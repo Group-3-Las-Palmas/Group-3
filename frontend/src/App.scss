@@ -1,5 +1,4 @@
 
-
 // Reset/normalize
 * {
   margin: 0;
@@ -8,7 +7,7 @@
 }
 
 body {
-  font-family: sans-serif;
+  font-family: "Poppins", sans-serif;
   background-color: #f9f9f9;
   color: #333;
 }
@@ -18,5 +17,6 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   height: 100vh;
-
+  position: relative;   
+  z-index: 0;            
 }

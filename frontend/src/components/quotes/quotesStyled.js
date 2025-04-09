@@ -1,27 +1,22 @@
 import styled from 'styled-components';
 
-export const QuoteCard = styled.div`
-  padding: 20px;
-  margin-top: 20px;
-  border-radius: 12px;
-  font-size: 24px;
-  font-weight: 600;
+export const QuoteWrapper = styled.div`
+  text-align: center;
+  padding: 32px 20px;
+`;
+
+export const QuoteText = styled.p`
   color: #1E3220;
-  width: 100%;
-  max-width: 1200px;
-  line-height: 1.1;
+  //font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 100%;
+  letter-spacing: 0.24px;
+  max-width: 90%;
+  margin: 0 auto;
 
-  @media (max-width: 1024px) {
-    font-size: 24px;
-    max-width: 90%;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 24px;
-    max-width: 95%;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 24px;
+  @media (min-width: 768px) {
+    max-width: 600px;
   }
 `;

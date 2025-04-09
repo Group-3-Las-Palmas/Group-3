@@ -1,0 +1,53 @@
+// Background.scss
+.aura-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #FFF2D6; // Soft beige color
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+  }
+  
+  .aura {
+    position: absolute;
+    width: 250px;  // Adjusted size
+    height: 250px;
+    background: radial-gradient(
+      circle,
+      rgba(255, 200, 60, 1) 0%,
+      rgba(255, 200, 60, 0.5) 30%,
+      rgba(255, 200, 60, 0) 70%
+    );
+    border-radius: 50%;
+    filter: blur(14px);
+    opacity: 1;
+    animation: floatAura 30s ease-in-out infinite;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  @keyframes floatAura {
+    0% {
+      transform: scale(1) translate(-50%, 0px) rotate(0deg);
+    }
+    20% {
+      transform: scale(1.05) translate(30%, -60px) rotate(2deg);
+    }
+    40% {
+      transform: scale(1.1) translate(-30%, 40px) rotate(-3deg);
+    }
+    60% {
+      transform: scale(1.07) translate(20%, 80px) rotate(1deg);
+    }
+    80% {
+      transform: scale(1.12) translate(-20%, -40px) rotate(-2deg);
+    }
+    100% {
+      transform: scale(1) translate(-50%, 0px) rotate(0deg);
+    }
+  }
+  
