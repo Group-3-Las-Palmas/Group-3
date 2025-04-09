@@ -12,12 +12,29 @@ export const getRewardById = async (id) => {
   return response.data;
 };
 
+const getToken = () => {
+  return localStorage.getItem("token");
+};
+
 export const getUserRewards = async (userId) => {
+  const token = getToken();
+  if (!token) {
+    console.error('Token no encontrado para getUserRewards');
+    throw new Error('Token de autenticación no encontrado.');
+  }
+
   try {
-    const response = await axios.get(`${API_BASE_URL}/user/${userId}`);
+    const response = await axios.get(`${API_URL}/user/${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}` // Include token
+      }
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching rewards', error);
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+        console.error("Token expired?");
+    }
     throw error;
   }
 };

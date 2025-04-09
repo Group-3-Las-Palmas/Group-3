@@ -19,15 +19,20 @@ const FavouriteExercises = ({ userId }) => {
 
   return (
     <div className="favourites">
-      <ul>
-        {favourites.map((item) => (
-          <li key={item.exercise_id}>
-            <strong>{item.Exercise.title}</strong> - {item.Exercise.description}
-          </li>
-        ))}
+      <ul className="list-disc pl-5 space-y-1">
+        {favourites.length > 0 ? (
+          favourites.map((item) => (
+            <li key={item.exercise_id}>
+              <strong>{item.Exercise?.title || 'Unknown'}</strong>
+              <span> Completed: {item.completed_times} {item.completed_times === 1 ? 'time' : 'times'}</span>
+            </li>
+          ))
+        ) : (
+          <p className="text-gray-500">You don't got any activity as favourite.</p>
+        )}
       </ul>
     </div>
   );
-};
+}
 
 export default FavouriteExercises;

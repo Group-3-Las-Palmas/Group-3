@@ -12,12 +12,29 @@ export const getUserExerciseById = async (id) => {
   return response.data;
 };
 
+const getToken = () => {
+  return localStorage.getItem("token");
+};
+
 export const getFavouriteExercisesByUser = async (userId) => {
+  const token = getToken();
+  if (!token) {
+    console.error('Token no encontrado para getFavouriteExercisesByUser');
+    throw new Error('Token de autenticación no encontrado.');
+  }
+
   try {
-    const response = await axios.get(`${API_BASE_URL}/favourites/${userId}`);
+    const response = await axios.get(`${API_URL}/favourites/${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}` // Include token
+      }
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching favourite exercises', error);
+     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+        console.error("Expired token?");
+    }
     throw error;
   }
 };
