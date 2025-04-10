@@ -8,13 +8,13 @@ import Comment from './comments.js';
 import Exercise from './exercises.js';
 import UserExercise from './userExercises.js';
 import Reward from './rewards.js';
-import LoginHistory from './loginHistory.js'; // <-- Añadir import
+import LoginHistory from './loginHistory.js';
 
 // User associations
 User.hasMany(Post, { foreignKey: 'user_id' });
 User.hasMany(Comment, { foreignKey: 'user_id' });
 User.hasMany(UserExercise, { foreignKey: 'user_id' });
-User.hasMany(LoginHistory, { foreignKey: 'user_id' }); // <-- Añadir asociación
+User.hasMany(LoginHistory, { foreignKey: 'user_id' });
 
 // Post associations
 Post.belongsTo(User, { foreignKey: 'user_id' });
@@ -36,7 +36,7 @@ UserExercise.belongsTo(Exercise, { foreignKey: 'exercise_id' });
 Reward.belongsTo(Exercise, { foreignKey: 'exercise_id' });
 
 // LoginHistory associations
-LoginHistory.belongsTo(User, { foreignKey: 'user_id' }); // <-- Añadir asociación
+LoginHistory.belongsTo(User, { foreignKey: 'user_id' });
 
 const db = {
   sequelize,
@@ -46,7 +46,7 @@ const db = {
   Exercise,
   UserExercise,
   Reward,
-  LoginHistory // <-- Añadir al objeto exportado
+  LoginHistory
 };
 
 export default db;
