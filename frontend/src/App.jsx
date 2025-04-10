@@ -8,9 +8,11 @@ import { MainPage } from './pages/mainPage.jsx'
 import { Register } from './pages/registerPage.jsx'
 // import { forumPage } from './pages/forumPage'
 
-import './App.scss'
-import './background.scss'
-import { CurrentActivityPage } from './pages/currentActivityPage.jsx'
+// Importar el componente de protección
+import ProtectedRoute from './components/auth/ProtectedRoute.jsx'; // Ajusta la ruta si es necesario
+
+import './App.scss';
+import './background.scss';
 
 function App() {
   return (
@@ -32,11 +34,12 @@ function App() {
               <Route path="/mainPage" element={<MainPage />} />
               <Route path="/registerPage" element={<Register/>}/>
             </Route>
+
           </Routes>
         </BrowserRouter>
       </section>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
