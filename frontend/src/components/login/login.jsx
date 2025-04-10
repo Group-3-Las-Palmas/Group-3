@@ -1,6 +1,5 @@
-// Group-3/frontend/src/components/login/login.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Container, Form, Input, Button, ErrorMessage } from "./loginStyled.js";
 // Import the specific service function needed
 import { loginUser } from "../../services/apiServices.js";
@@ -66,7 +65,7 @@ const Login = () => {
         <a href="#">Forgot password?</a>
         <Button type="submit">Login</Button>
         <p>
-          Don't have an account? <a href="#">Sign up</a>
+          Don't have an account? <Link to={"/registerPage"}><a>Sign up</a></Link>
         </p>
       </Form>
     </Container>

@@ -5,6 +5,7 @@ import { SettingsUserPage } from './pages/settingsUserPage.jsx'
 import { ActivityPage } from './pages/activityPage.jsx'
 import { Layout } from './layout/Layout.jsx'
 import { MainPage } from './pages/mainPage.jsx'
+import { Register } from './pages/registerPage.jsx'
 // import { forumPage } from './pages/forumPage'
 
 import './App.scss'
@@ -29,6 +30,7 @@ function App() {
               <Route path="/settingsUserPage" element={<SettingsUserPage />} />
               <Route path="/current-activityPage" element={<CurrentActivityPage />} />
               <Route path="/mainPage" element={<MainPage />} />
+              <Route path="/registerPage" element={<Register/>}/>
             </Route>
           </Routes>
         </BrowserRouter>
