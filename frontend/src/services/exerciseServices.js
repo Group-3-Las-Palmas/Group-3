@@ -1,28 +1,26 @@
-import axios from "axios";
+import { fetchApi } from "./apiServices";
 
-const API_URL = "http://localhost:3000/api/exercises";
+// Usa la ruta relativa para fetchApi
+const API_ENDPOINT = "/exercises";
 
 export const getAllExercises = async () => {
-  const response = await axios.get(API_URL);
-  return response.data;
+  // Llama a fetchApi con el endpoint relativo. GET es el método por defecto.
+  return await fetchApi(API_ENDPOINT);
 };
 
 export const getExerciseById = async (id) => {
-  const response = await axios.get(`${API_URL}/${id}`);
-  return response.data;
+  // Llama a fetchApi con el endpoint específico del ejercicio.
+  return await fetchApi(`${API_ENDPOINT}/${id}`);
 };
 
 export const createExercise = async (exerciseData) => {
-  const response = await axios.post(API_URL, exerciseData);
-  return response.data;
+  return await fetchApi(API_ENDPOINT, "POST", exerciseData);
 };
 
 export const updateExercise = async (id, updatedData) => {
-  const response = await axios.put(`${API_URL}/${id}`, updatedData);
-  return response.data;
+  return await fetchApi(`${API_ENDPOINT}/${id}`, "PUT", updatedData);
 };
 
 export const deleteExercise = async (id) => {
-  const response = await axios.delete(`${API_URL}/${id}`);
-  return response.data;
+  return await fetchApi(`${API_ENDPOINT}/${id}`, "DELETE");
 };
