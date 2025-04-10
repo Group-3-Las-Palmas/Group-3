@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "1234",
+    "database": "lumo",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "1234",
+    "database": "lumo_test",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "usuario_prod",
+    "password": "password_prod",
+    "database": "lumo_prod",
+    "host": "host_prod",
+    "dialect": "mysql"
+  }
+}
