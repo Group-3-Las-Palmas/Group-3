@@ -15,7 +15,6 @@ export const Form = styled.form`
   width: 320px;
   padding: 2rem;
   border-radius: 10px;
-  font-family: "Arial", sans-serif;
 `;
 
 export const Input = styled.input`

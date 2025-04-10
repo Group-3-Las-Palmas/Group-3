@@ -65,7 +65,7 @@ const Login = () => {
         <a href="#">Forgot password?</a>
         <Button type="submit">Login</Button>
         <p>
-          Don't have an account? <Link to={"/registerPage"}><a>Sign up</a></Link>
+          Don't have an account? <Link to={"/registerPage"}>Sign up</Link>
         </p>
       </Form>
     </Container>
