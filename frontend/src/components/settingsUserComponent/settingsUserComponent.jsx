@@ -30,19 +30,19 @@ import { SERVER_BASE_URL } from "../../services/apiServices.js";
 const FRONTEND_DEFAULT_IMAGE_PATH = "/uploads/without_image.webp";
 
 const SettingsUserComponent = () => {
-  // Estados generales
+  //General states
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Estados para edición username
+  // Edition states
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [editableUsername, setEditableUsername] = useState("");
   const [isUpdatingUsername, setIsUpdatingUsername] = useState(false);
   const [usernameUpdateError, setUsernameUpdateError] = useState(null);
 
-  // Estados para subida/manejo de imagen
+  // Image states
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -51,10 +51,10 @@ const SettingsUserComponent = () => {
   const [deleteImageError, setDeleteImageError] = useState(null);
   const fileInputRef = useRef(null);
 
-  // Estado para confirmación inline
+  // Confirm state
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
-  // --- Handlers --- (sin cambios)
+  // --- Handlers ---
 
   const handleLogout = useCallback(() => {
     console.log("Logging out...");
@@ -63,12 +63,12 @@ const SettingsUserComponent = () => {
     navigate("/");
   }, [navigate]);
 
-  // Efecto para cargar datos iniciales (sin cambios)
+  // Initial info state
   useEffect(() => {
     const fetchUserData = async () => {
       setLoading(true);
       setError(null);
-      // Resetear todos los estados
+      // Reset all states
       setIsEditingUsername(false);
       setSelectedFile(null);
       setPreviewUrl(null);
@@ -264,16 +264,16 @@ const SettingsUserComponent = () => {
     setDeleteImageError(null);
   };
 
-  // --- Fin Handlers ---
+  // --- End Handlers ---
 
-  // Determinar si alguna acción está en progreso
+  // Action in progress
   const isBusy =
     isUpdatingUsername ||
     isUploadingImage ||
     isDeletingImage ||
     isConfirmingDelete;
 
-  // Renderizado de Loading / Error inicial / No data (con textos en inglés)
+  // Render Loading
   if (loading)
     return (
       <SettingsUserContainer>
@@ -295,7 +295,7 @@ const SettingsUserComponent = () => {
     );
   }
 
-  // Determinar URL a mostrar y si es la imagen por defecto (sin cambios)
+  // Verify url and default image
   const actualImageUrl = userData.profile_image_url;
   const displayImageUrl =
     previewUrl ||
@@ -309,7 +309,7 @@ const SettingsUserComponent = () => {
 
   return (
     <SettingsUserContainer>
-      {/* Input File oculto (sin cambios) */}
+      {/*Hidden input file*/}
       <FileInput
         type="file"
         ref={fileInputRef}
@@ -318,7 +318,7 @@ const SettingsUserComponent = () => {
         disabled={isBusy}
       />
 
-      {/* Wrapper de Imagen (sin cambios) */}
+      {/* Image Wrapper*/}
       <div
         onClick={
           !selectedFile && !isConfirmingDelete ? handleImageClick : undefined
@@ -329,7 +329,7 @@ const SettingsUserComponent = () => {
         style={{ cursor: selectedFile || isBusy ? "default" : "pointer" }}
       >
         {displayImageUrl ? (
-          // Asegúrate que el alt text usa el username actual
+          // Alt name shows user
           <ProfileImage
             src={displayImageUrl}
             alt={`${userData?.username}'s profile`}
@@ -341,7 +341,7 @@ const SettingsUserComponent = () => {
         )}
       </div>
 
-      {/* Contenedor de Botones para Imagen (textos en inglés) */}
+      {/* Buttons container */}
       <UploadButtonsContainer>
         {selectedFile && !isConfirmingDelete && (
           <>
@@ -364,7 +364,7 @@ const SettingsUserComponent = () => {
         )}
       </UploadButtonsContainer>
 
-      {/* Bloque de Confirmación de Borrado (textos en inglés) */}
+      {/* Delete warning*/}
       {isConfirmingDelete && (
         <DeleteConfirmContainer>
           <p>Are you sure you want to delete your photo?</p>
@@ -386,14 +386,14 @@ const SettingsUserComponent = () => {
         </DeleteConfirmContainer>
       )}
 
-      {/* Muestra errores de Imagen (sin cambios) */}
+      {/* Image errors*/}
       {!isConfirmingDelete && (
         <ErrorText>
           {imageUploadError || deleteImageError || "\u00A0"}
         </ErrorText>
       )}
 
-      {/* Edición de Username (textos en inglés) */}
+      {/* Username edit*/}
       {!isEditingUsername ? (
         <UsernameBox>
           <h3>{userData.username}</h3>
@@ -434,18 +434,17 @@ const SettingsUserComponent = () => {
         </EditUsernameForm>
       )}
 
-      {/* --- CONTENEDOR CON BOTONES BACK Y LOG OUT --- */}
+      {/* --- BACK Y LOG OUT BUTTONS CONTAINER --- */}
       <BottomButtonsContainer>
-        {/* Botón Back añadido */}
+        {/* Back button */}
         <LogoutButton onClick={() => navigate("/profilePage")} disabled={isBusy}>
           Back
         </LogoutButton>
-        {/* Botón Log out existente */}
+        {/* Log out button */}
         <LogoutButton onClick={handleLogout} disabled={isBusy}>
           Log out
         </LogoutButton>
       </BottomButtonsContainer>
-      {/* --- FIN CONTENEDOR --- */}
     </SettingsUserContainer>
   );
 };

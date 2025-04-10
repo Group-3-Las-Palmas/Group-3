@@ -1,18 +1,16 @@
-// backend/controllers/authController.js
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import models from "../models/index.js"; // Models ya incluye LoginHistory
-import { UniqueConstraintError, Op } from "sequelize"; // <-- Importar Op
+import models from "../models/index.js"; // Models already includes LoginHistory
+import { UniqueConstraintError, Op } from "sequelize";
 
-// Extraer modelos
-const { User, LoginHistory } = models; // <-- Añadir LoginHistory aquí
+// Extract models
+const { User, LoginHistory } = models; // <-- Añadir models here
 
-// URL relativa a tu imagen predeterminada (sin cambios)
+// URL default profile image
 const DEFAULT_PROFILE_IMAGE_URL = "/uploads/without_image.webp";
 
-// Función register (sin cambios)
+// Register
 export const register = async (req, res) => {
-  // ... (código existente sin cambios)
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
@@ -69,7 +67,7 @@ export const register = async (req, res) => {
   }
 };
 
-// Función login (MODIFICADA)
+// Login
 export const login = async (req, res) => {
   const user = req.user;
   const payload = {
@@ -84,15 +82,13 @@ export const login = async (req, res) => {
   const token = jwt.sign(payload, secret, { expiresIn: "1h" });
 
   try {
-    // --- AÑADIR ESTO: Registrar el intento de login exitoso ---
     await LoginHistory.create({
         user_id: user.user_id,
-        login_timestamp: new Date() // Sequelize usa el tiempo actual por defecto si no se especifica
+        login_timestamp: new Date()
     });
     console.log(`Login recorded for user ${user.user_id}`);
-    // --- FIN DE LA MODIFICACIÓN ---
 
-    // Respuesta de login exitoso (sin cambios)
+    // Succesfull login
     res.json({
       message: "Login successful",
       token,
@@ -104,12 +100,9 @@ export const login = async (req, res) => {
       },
     });
   } catch (error) {
-      // Si falla el registro del login, aún queremos enviar la respuesta de login exitoso,
-      // pero logueamos el error. Podrías manejar esto diferente si el registro es crítico.
       console.error(`Failed to record login for user ${user.user_id}:`, error);
-      // Enviar la respuesta de login igualmente
        res.json({
-        message: "Login successful (but history record failed)", // Mensaje opcional indicando el problema
+        message: "Login successful (but history record failed)",
         token,
         user: {
           user_id: user.user_id,
@@ -121,9 +114,9 @@ export const login = async (req, res) => {
   }
 };
 
-// --- NUEVA FUNCIÓN: Obtener historial de login de los últimos 7 días ---
+//Get login from last 7 days
 export const getLoginHistory = async (req, res) => {
-    const userId = req.user.user_id; // ID del usuario autenticado (viene del middleware authenticateToken)
+    const userId = req.user.user_id; // user id
 
     if (!userId) {
         return res.status(401).json({ message: "User ID not found in token." });
@@ -131,29 +124,28 @@ export const getLoginHistory = async (req, res) => {
 
     try {
         const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7); // Fecha de hace 7 días
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7); // Last 7 days date
 
         const history = await LoginHistory.findAll({
             where: {
                 user_id: userId,
                 login_timestamp: {
-                    [Op.gte]: sevenDaysAgo // Operador 'greater than or equal to'
+                    [Op.gte]: sevenDaysAgo
                 }
             },
-            attributes: ['login_timestamp'], // Solo necesitamos la fecha/hora
-            order: [['login_timestamp', 'ASC']] // Opcional: ordenar
+            attributes: ['login_timestamp'], // Only date and time
+            order: [['login_timestamp', 'ASC']] // Order
         });
 
-        // Mapear a formato YYYY-MM-DD y obtener fechas únicas
+        // Format and get unique dates
         const uniqueDates = [...new Set(history.map(record =>
-            record.login_timestamp.toISOString().split('T')[0] // Extrae solo la parte de la fecha
+            record.login_timestamp.toISOString().split('T')[0]
         ))];
 
-        res.json(uniqueDates); // Devuelve un array de strings ["YYYY-MM-DD", ...]
+        res.json(uniqueDates); // Get array with format ["YYYY-MM-DD", ...]
 
     } catch (error) {
         console.error(`Error fetching login history for user ${userId}:`, error);
         res.status(500).json({ message: 'Error fetching login history', error: error.message });
     }
 };
-// --- FIN NUEVA FUNCIÓN ---

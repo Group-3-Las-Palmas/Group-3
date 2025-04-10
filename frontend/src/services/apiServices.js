@@ -1,15 +1,8 @@
-// frontend/src/services/apiServices.js
+// URL for API calls
+const API_BASE_URL = "http://localhost:3000/api";
+export const SERVER_BASE_URL = "http://localhost:3000";
 
-// URL base SIN el /api
-const API_BASE_URL = "http://localhost:3000"; // <-- CAMBIO AQUÍ
-export const SERVER_BASE_URL = "http://localhost:3000"; // Esta se mantiene igual
 
-/**
- * Gestiona las respuestas de la API, parseando JSON o lanzando un error.
- * @param {Response} response - El objeto de respuesta fetch.
- * @returns {Promise<any>} - El cuerpo de la respuesta parseado.
- * @throws {Error} - Si la respuesta no es OK.
- */
 const handleResponse = async (response) => {
   const contentType = response.headers.get("content-type");
   let data;
@@ -24,6 +17,7 @@ const handleResponse = async (response) => {
       throw new Error(text || `Invalid JSON received with status: ${response.status}`);
     }
   } else {
+    // If it is not JSON
     const text = await response.text();
     if (!response.ok) {
         data = { message: text || `Received non-JSON response with status: ${response.status}` };
@@ -33,38 +27,31 @@ const handleResponse = async (response) => {
   }
 
   if (!response.ok) {
-    throw new Error(data?.message || `HTTP error! status: ${response.status}`);
+    // Throw backend generic error
+    throw new Error(data.message || `HTTP error! status: ${response.status}`);
   }
-
-  return data;
+  return data; // Return success response
 };
 
-
-/**
- * Registra un nuevo usuario.
- * @param {string} username - Nombre de usuario deseado.
- * @param {string} email - Email del usuario.
- * @param {string} password - Contraseña del usuario.
- * @returns {Promise<object>} - La respuesta del backend.
- * @throws {Error} - Si el registro falla.
- */
 export const registerUser = async (username, email, password) => {
   try {
-    // fetchApi ahora construirá http://localhost:3000/api/auth/register
-    return await fetchApi('/auth/register', 'POST', { username, email, password });
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // Body includes all user data
+      body: JSON.stringify({ username, email, password }),
+    });
+    // Verify success or error
+    return await handleResponse(response);
   } catch (error) {
     console.error("Registration service error:", error);
+    // Throw error again to component can manage
     throw error;
   }
 };
 
-/**
- * Realiza el login del usuario usando autenticación Basic.
- * @param {string} email - Email del usuario.
- * @param {string} password - Contraseña del usuario.
- * @returns {Promise<object>} - La respuesta del backend (incluyendo token y user).
- * @throws {Error} - Si el login falla.
- */
 export const loginUser = async (email, password) => {
   try {
     // Construimos la URL completa manualmente aquí ya que no usa fetchApi
@@ -76,6 +63,7 @@ export const loginUser = async (email, password) => {
         "Content-Type": "application/json",
         "Accept": "application/json",
       },
+      // Without body
     });
     return await handleResponse(response);
   } catch (error) {
@@ -84,23 +72,10 @@ export const loginUser = async (email, password) => {
   }
 };
 
-
-/**
- * Obtiene el token de autenticación almacenado en localStorage.
- * @returns {string | null} - El token o null si no existe.
- */
 const getToken = () => {
   return localStorage.getItem("token");
 };
 
-/**
- * Realiza una petición autenticada genérica a la API usando token Bearer.
- * @param {string} endpoint - El endpoint relativo de la API (ej: '/users', '/user-exercises/complete'). Debe empezar con '/'.
- * @param {string} method - El método HTTP (GET, POST, PUT, DELETE, PATCH). Por defecto 'GET'.
- * @param {object | null} body - El cuerpo de la petición para POST/PUT/PATCH. Por defecto null.
- * @returns {Promise<any>} - La respuesta del backend parseada.
- * @throws {Error} - Si la petición fetch o la respuesta indican un error.
- */
 export const fetchApi = async (endpoint, method = "GET", body = null) => {
   const token = getToken();
   const headers = {
@@ -156,9 +131,16 @@ export const getUserById = async (userId) => {
   return await fetchApi(`/users/${userId}`);
 };
 
+/**
+ * Get login dates (YYYY-MM-DD) for authenticated user
+ * @returns {Promise<string[]>} - Dates array in string.
+ * @throws {Error} - Si la petición falla.
+ */
 export const fetchLoginHistory = async () => {
-  return await fetchApi('/auth/login-history');
+  // Use fetchApi already include token
+  return await fetchApi('/auth/login-history'); // Endpoint GET
 };
+
 
 export const getMindfulnessQuote = async () => {
   try {
