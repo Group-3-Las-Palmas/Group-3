@@ -1,8 +1,8 @@
 // frontend/src/services/apiServices.js
 
-// URL base para las llamadas a la API
-const API_BASE_URL = "http://localhost:3000/api";
-export const SERVER_BASE_URL = "http://localhost:3000";
+// URL base SIN el /api
+const API_BASE_URL = "http://localhost:3000"; // <-- CAMBIO AQUÍ
+export const SERVER_BASE_URL = "http://localhost:3000"; // Esta se mantiene igual
 
 /**
  * Gestiona las respuestas de la API, parseando JSON o lanzando un error.
@@ -13,20 +13,32 @@ export const SERVER_BASE_URL = "http://localhost:3000";
 const handleResponse = async (response) => {
   const contentType = response.headers.get("content-type");
   let data;
-  if (contentType && contentType.indexOf("application/json") !== -1) {
-    data = await response.json();
+
+  if (contentType && contentType.includes("application/json")) {
+    try {
+      data = await response.json();
+    // eslint-disable-next-line no-unused-vars
+    } catch (_e) {
+      console.warn("Failed to parse JSON response, reading as text.");
+      const text = await response.text();
+      throw new Error(text || `Invalid JSON received with status: ${response.status}`);
+    }
   } else {
-    // Si no es JSON, intenta obtener el texto para el mensaje de error
     const text = await response.text();
-    data = { message: text || `Received non-JSON response with status: ${response.status}` };
+    if (!response.ok) {
+        data = { message: text || `Received non-JSON response with status: ${response.status}` };
+    } else {
+        return text;
+    }
   }
 
   if (!response.ok) {
-    // Lanza el mensaje de error del backend si está disponible, si no, un error genérico
-    throw new Error(data.message || `HTTP error! status: ${response.status}`);
+    throw new Error(data?.message || `HTTP error! status: ${response.status}`);
   }
-  return data; // Devuelve los datos si la respuesta es exitosa
+
+  return data;
 };
+
 
 /**
  * Registra un nuevo usuario.
@@ -34,23 +46,14 @@ const handleResponse = async (response) => {
  * @param {string} email - Email del usuario.
  * @param {string} password - Contraseña del usuario.
  * @returns {Promise<object>} - La respuesta del backend.
- * @throws {Error} - Si el registro falla (ej: email/usuario ya existe, error del servidor).
+ * @throws {Error} - Si el registro falla.
  */
 export const registerUser = async (username, email, password) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // El cuerpo debe contener los datos del usuario a registrar
-      body: JSON.stringify({ username, email, password }),
-    });
-    // Utiliza handleResponse para gestionar éxito o error
-    return await handleResponse(response);
+    // fetchApi ahora construirá http://localhost:3000/api/auth/register
+    return await fetchApi('/auth/register', 'POST', { username, email, password });
   } catch (error) {
     console.error("Registration service error:", error);
-    // Re-lanza el error para que el componente pueda manejarlo (ej: mostrar mensaje al usuario)
     throw error;
   }
 };
@@ -59,18 +62,20 @@ export const registerUser = async (username, email, password) => {
  * Realiza el login del usuario usando autenticación Basic.
  * @param {string} email - Email del usuario.
  * @param {string} password - Contraseña del usuario.
- * @returns {Promise<object>} - La respuesta del backend (incluyendo el token).
+ * @returns {Promise<object>} - La respuesta del backend (incluyendo token y user).
  * @throws {Error} - Si el login falla.
  */
 export const loginUser = async (email, password) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    // Construimos la URL completa manualmente aquí ya que no usa fetchApi
+    const loginUrl = `${API_BASE_URL}/api/auth/login`; // Añadimos /api manualmente
+    const response = await fetch(loginUrl, {
       method: "POST",
       headers: {
         Authorization: `Basic ${btoa(`${email}:${password}`)}`,
         "Content-Type": "application/json",
+        "Accept": "application/json",
       },
-      // No se necesita body para Basic Auth en este caso
     });
     return await handleResponse(response);
   } catch (error) {
@@ -78,6 +83,7 @@ export const loginUser = async (email, password) => {
     throw error;
   }
 };
+
 
 /**
  * Obtiene el token de autenticación almacenado en localStorage.
@@ -89,15 +95,17 @@ const getToken = () => {
 
 /**
  * Realiza una petición autenticada genérica a la API usando token Bearer.
- * @param {string} endpoint - El endpoint de la API (ej: '/users').
- * @param {string} method - El método HTTP (GET, POST, PUT, DELETE, PATCH).
- * @param {object | null} body - El cuerpo de la petición para POST/PUT/PATCH.
- * @returns {Promise<any>} - La respuesta del backend.
+ * @param {string} endpoint - El endpoint relativo de la API (ej: '/users', '/user-exercises/complete'). Debe empezar con '/'.
+ * @param {string} method - El método HTTP (GET, POST, PUT, DELETE, PATCH). Por defecto 'GET'.
+ * @param {object | null} body - El cuerpo de la petición para POST/PUT/PATCH. Por defecto null.
+ * @returns {Promise<any>} - La respuesta del backend parseada.
+ * @throws {Error} - Si la petición fetch o la respuesta indican un error.
  */
 export const fetchApi = async (endpoint, method = "GET", body = null) => {
   const token = getToken();
   const headers = {
     "Content-Type": "application/json",
+    "Accept": "application/json",
   };
 
   if (token) {
@@ -114,8 +122,19 @@ export const fetchApi = async (endpoint, method = "GET", body = null) => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    // --- NUEVA CONSTRUCCIÓN DE URL ---
+    // Asegura que el endpoint relativo empiece con '/'
+    const relativeEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    // Combina la base (sin /api) + /api + endpoint relativo
+    const finalUrl = `${API_BASE_URL}/api${relativeEndpoint}`; // <-- CAMBIO AQUÍ
+    // ---------------------------------
+
+    console.log(`Making API call: ${method} ${finalUrl}`);
+
+    const response = await fetch(finalUrl, config);
+
     return await handleResponse(response);
+
   } catch (error) {
     console.error(`API fetch error (${method} ${endpoint}):`, error);
     throw error;
@@ -123,34 +142,23 @@ export const fetchApi = async (endpoint, method = "GET", body = null) => {
 };
 
 // --- Examples of specific API functions using fetchApi ---
+// (No necesitan cambios, ya que usan fetchApi con la ruta relativa correcta)
 
-// Example: Get all posts (requires token)
 export const getPosts = async () => {
-  return await fetchApi("/posts"); // Defaults to GET
+  return await fetchApi("/posts");
 };
 
-// Example: Create a new post (requires token)
 export const createPost = async (content) => {
   return await fetchApi("/posts", "POST", { content });
 };
 
-// Example: Get user data by ID (requires token)
 export const getUserById = async (userId) => {
   return await fetchApi(`/users/${userId}`);
 };
 
-// --- NUEVA FUNCIÓN ---
-/**
- * Obtiene el historial de fechas de login (YYYY-MM-DD) para el usuario autenticado.
- * @returns {Promise<string[]>} - Un array de strings de fechas.
- * @throws {Error} - Si la petición falla.
- */
 export const fetchLoginHistory = async () => {
-  // Usa fetchApi que ya incluye el manejo del token Bearer
-  return await fetchApi('/auth/login-history'); // Endpoint GET
+  return await fetchApi('/auth/login-history');
 };
-// --- FIN NUEVA FUNCIÓN ---
-
 
 export const getMindfulnessQuote = async () => {
   try {
@@ -158,16 +166,12 @@ export const getMindfulnessQuote = async () => {
       method: 'GET',
       headers: {
         'x-rapidapi-host': 'metaapi-mindfulness-quotes.p.rapidapi.com',
-        'x-rapidapi-key': 'c484c9e532msh2f0aec8a41c9b56p1a057cjsn41d56c80bc5a' // Considera mover esta clave a variables de entorno
+        'x-rapidapi-key': 'c484c9e532msh2f0aec8a41c9b56p1a057cjsn41d56c80bc5a'
       }
     });
-
-    if (!response.ok) throw new Error('No quote today, sorry!');
-
-    const data = await response.json();
-    return data;
+    return await handleResponse(response);
   } catch (error) {
     console.error('Error fetching mindfulness quote:', error);
-    return null;
+    throw error;
   }
 };

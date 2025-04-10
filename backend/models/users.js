@@ -27,12 +27,24 @@ const User = sequelize.define(
     profile_image_url: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    last_reward_id: {
+      type: DataTypes.BIGINT,
+      allowNull: true,    
+      references: {       
+        model: 'rewards',
+        key: 'reward_id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL'
     }
   },
   {
     tableName: "users",
     timestamps: false,
   }
+  
+
 );
 
 export default User;

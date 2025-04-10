@@ -1,55 +1,39 @@
-import axios from "axios";
+// frontend/src/services/userExerciseServices.js
 
-const API_URL = "http://localhost:3000/api/user-exercises";
+// Importa la función fetchApi que maneja la autenticación
+import { fetchApi } from './apiServices';
 
+/**
+ * Registra la finalización de un ejercicio para el usuario autenticado.
+ * @param {number | string} exerciseId - El ID del ejercicio completado.
+ * @returns {Promise<object>} - La respuesta del backend.
+ */
+export const markExerciseAsCompleted = async (exerciseId) => {
+    // Llama a fetchApi pasando directamente la ruta relativa completa
+    return await fetchApi('/user-exercises/complete', 'POST', { exerciseId });
+};
+
+// --- Otras funciones de servicio frontend ---
 export const getAllUserExercises = async () => {
-  const response = await axios.get(API_URL);
-  return response.data;
+  return await fetchApi('/user-exercises');
 };
 
 export const getUserExerciseById = async (id) => {
-  const response = await axios.get(`${API_URL}/${id}`);
-  return response.data;
-};
-
-const getToken = () => {
-  return localStorage.getItem("token");
+  return await fetchApi(`/user-exercises/${id}`);
 };
 
 export const getFavouriteExercisesByUser = async (userId) => {
-  const token = getToken();
-  if (!token) {
-    console.error('Token no encontrado para getFavouriteExercisesByUser');
-    throw new Error('Token de autenticación no encontrado.');
-  }
-
-  try {
-    const response = await axios.get(`${API_URL}/favourites/${userId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}` // Include token
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching favourite exercises', error);
-     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-        console.error("Expired token?");
-    }
-    throw error;
-  }
+  return await fetchApi(`/user-exercises/favourites/${userId}`);
 };
 
 export const createUserExercise = async (userExerciseData) => {
-  const response = await axios.post(API_URL, userExerciseData);
-  return response.data;
+  return await fetchApi('/user-exercises', 'POST', userExerciseData);
 };
 
 export const updateUserExercise = async (id, updatedData) => {
-  const response = await axios.put(`${API_URL}/${id}`, updatedData);
-  return response.data;
+  return await fetchApi(`/user-exercises/${id}`, 'PUT', updatedData);
 };
 
 export const deleteUserExercise = async (id) => {
-  const response = await axios.delete(`${API_URL}/${id}`);
-  return response.data;
+  return await fetchApi(`/user-exercises/${id}`, 'DELETE');
 };
