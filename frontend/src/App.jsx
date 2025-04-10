@@ -1,15 +1,13 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import UserProfilePage from './pages/profilePage.jsx'
-import { LandingPage } from './pages/landingPage.jsx'
-import { SettingsUserPage } from './pages/settingsUserPage.jsx'
-import { ActivityPage } from './pages/activityPage.jsx'
-import { Layout } from './layout/Layout.jsx'
-import { MainPage } from './pages/mainPage.jsx'
-import { Register } from './pages/registerPage.jsx'
-// import { forumPage } from './pages/forumPage'
-
-// Importar el componente de protección
-import ProtectedRoute from './components/auth/ProtectedRoute.jsx'; // Ajusta la ruta si es necesario
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import UserProfilePage from './pages/profilePage.jsx';
+import { LandingPage } from './pages/landingPage.jsx';
+import { SettingsUserPage } from './pages/settingsUserPage.jsx';
+import { CurrentActivityPage } from './pages/currentActivityPage.jsx';
+import { ActivityPage } from './pages/activityPage.jsx';
+import { Layout } from './layout/Layout.jsx';
+import { MainPage } from './pages/mainPage.jsx';
+import { Register } from './pages/registerPage.jsx';
+import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 
 import './App.scss';
 import './background.scss';
@@ -25,16 +23,17 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route index element={<LandingPage />} />
-            <Route path="/" element={<Layout />}>
-              <Route path="/ActivityPage" element={<ActivityPage />} />
-              <Route path="/forumPage" element={<div>Forum Page</div>} />
-              <Route path="/profilePage" element={<UserProfilePage />} />
-              <Route path="/settingsUserPage" element={<SettingsUserPage />} />
-              <Route path="/current-activityPage" element={<CurrentActivityPage />} />
-              <Route path="/mainPage" element={<MainPage />} />
-              <Route path="/registerPage" element={<Register/>}/>
+            <Route path="/registerPage" element={<Register />} />
+            <Route element={<ProtectedRoute />}>
+              <Route element={<Layout />}>
+                <Route path="/ActivityPage" element={<ActivityPage />} />
+                <Route path="/forumPage" element={<div>Forum Page</div>} />
+                <Route path="/profilePage" element={<UserProfilePage />} />
+                <Route path="/settingsUserPage" element={<SettingsUserPage />} />
+                <Route path="/current-activityPage" element={<CurrentActivityPage />} />
+                <Route path="/mainPage" element={<MainPage />} />
+              </Route>
             </Route>
-
           </Routes>
         </BrowserRouter>
       </section>
