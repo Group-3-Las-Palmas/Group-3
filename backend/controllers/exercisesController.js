@@ -1,15 +1,48 @@
 import models from "../models/index.js";
+import sequelize from "../db.js";
 
 const { Exercise } = models;
 
 // Get all exercises
 export const getExercises = async (req, res) => {
+  const userId = req.user?.user_id; // Obtener userId si el usuario está autenticado
+
   try {
-    const exercises = await Exercise.findAll({
-      attributes: ["exercise_id", "title", "description", "time", "category", "goal"]
+    const queryOptions = {
+      attributes: [
+          "exercise_id",
+          "title",
+          "description",
+          "time",
+          "category",
+          "goal",
+          ...(userId ? [
+              [
+                  sequelize.literal(`(
+                      SELECT is_favourite
+                      FROM user_exercises AS ue
+                      WHERE ue.exercise_id = Exercise.exercise_id
+                      AND ue.user_id = ${sequelize.escape(userId)}
+                  )`),
+                  'is_favourite_for_user'
+              ]
+          ] : [])
+      ],
+    };
+
+    const exercises = await Exercise.findAll(queryOptions);
+
+    const processedExercises = exercises.map(ex => {
+        const plainEx = ex.get({ plain: true });
+        plainEx.is_favourite = !!plainEx.is_favourite_for_user;
+        delete plainEx.is_favourite_for_user;
+        return plainEx;
     });
-    res.json(exercises);
+
+
+    res.json(processedExercises);
   } catch (error) {
+    console.error("Error fetching exercises with favourite status:", error);
     res.status(500).json({ error: error.message });
   }
 };

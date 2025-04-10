@@ -7,7 +7,8 @@ import {
   deleteUserExercise,
   getUserExerciseById,
   getFavouritesByUser,
-  completeExercise
+  completeExercise,
+  toggleFavourite,
 } from '../controllers/userExerciseController.js';
 
 import { authenticateToken } from '../middleware/authenticateToken.js';
@@ -20,5 +21,6 @@ router.put('/:id', authenticateToken, updateUserExercise);
 router.delete('/:id', authenticateToken, deleteUserExercise);
 router.get('/favourites/:userId', authenticateToken, getFavouritesByUser);
 router.post('/complete', authenticateToken, completeExercise);
+router.patch('/toggle-favourite', authenticateToken, toggleFavourite);
 
 export default router;

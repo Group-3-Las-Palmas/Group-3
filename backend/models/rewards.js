@@ -1,3 +1,4 @@
+// Group-3/backend/models/rewards.js
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
 
@@ -23,7 +24,7 @@ const Reward = sequelize.define(
             allowNull: false
         },
         badge: {
-            type: DataTypes.BLOB,
+            type: DataTypes.STRING,
             allowNull: true,
         },
         earned_at: {
