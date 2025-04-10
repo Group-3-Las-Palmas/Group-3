@@ -1,127 +1,146 @@
 // Group-3/frontend/src/components/activity/activity.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getAllExercises } from '../../services/exerciseServices'; // Import service to get exercises
+// Asume que exerciseServices ahora tiene getAllExercises usando fetchApi
+import { getAllExercises } from '../../services/exerciseServices';
+// Importa el nuevo servicio para el toggle
+import { toggleFavoriteExercise } from '../../services/userExerciseServices';
 import {
-  // Assuming you have a generic container or specific ones
-  MeditationContainer,
-  MeditationDesc,
-  // Import other styled containers if needed (or use a generic one)
-  // BreathingContainer, BreathingDesc, StretchingContainer, StretchingDesc
+  MeditationContainer, MeditationDesc, /* otros si usas */
 } from "./activityStyled";
 
-// Import icons (ensure paths are correct)
+// Import icons
 import MeditationIcon from "../../assets/Meditation.svg";
-import favoriteIcon from "../../assets/favoriteIcon.svg";
-import unfavoriteIcon from "../../assets/unfavoriteIcon.svg";
+import favoriteIcon from "../../assets/favoriteIcon.svg"; // Corazón lleno
+import unfavoriteIcon from "../../assets/unfavoriteIcon.svg"; // Corazón vacío
 import BreathingIcon from "../../assets/breathingIcon.svg";
-import StretchingIcon from "../../assets/stretchingIcon.svg"; // Corrected variable name
+import StretchingIcon from "../../assets/stretchingIcon.svg";
 
-// --- Favorite Button Component ---
-// (Added exerciseId prop for potential future use, like saving favorites to backend)
-export const FavoriteButton = ({ exerciseId }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+// Mapeo de iconos de categoría
+const categoryIcons = {
+    Meditation: MeditationIcon,
+    Breathing: BreathingIcon,
+    Stretching: StretchingIcon,
+    default: MeditationIcon
+};
 
-  // TODO: Implement backend call to toggle favorite status using exerciseId
-  const handleClick = () => {
-    setIsFavorite(!isFavorite);
-    console.log(`Toggled favorite for exercise ID: ${exerciseId}`); // Placeholder
+// --- Componente FavoriteButton MODIFICADO ---
+export const FavoriteButton = ({ exerciseId, initialIsFavorite }) => {
+  // Estado local para la UI, inicializado con el prop
+  const [isFav, setIsFav] = useState(initialIsFavorite);
+  const [isLoading, setIsLoading] = useState(false); // Para deshabilitar mientras se guarda
+
+  // Actualizar estado si el prop inicial cambia
+  useEffect(() => {
+    setIsFav(initialIsFavorite);
+  }, [initialIsFavorite]);
+
+  const handleClick = async () => {
+    if (isLoading) return; // Evitar clicks múltiples
+
+    const previousIsFav = isFav; // Guardar estado anterior por si falla
+    setIsLoading(true);
+    setIsFav(!isFav); // Actualización optimista de la UI
+
+    try {
+      // Llamar al backend para cambiar el estado real
+      const response = await toggleFavoriteExercise(exerciseId);
+      // Opcional: Forzar la actualización del estado con la respuesta del backend
+      // setIsFav(response.is_favourite); // Más seguro pero puede causar pequeño parpadeo
+      console.log(`Toggled favorite for ${exerciseId} to ${response.is_favourite}`);
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+      setIsFav(previousIsFav); // Revertir la UI si falla la llamada al backend
+      // Aquí podrías mostrar un mensaje de error al usuario
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <button
       onClick={handleClick}
-      style={{ background: "none", border: "none", cursor: "pointer", padding: "0" }}
-      aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+      disabled={isLoading} // Deshabilitar mientras carga
+      style={{ background: "none", border: "none", cursor: isLoading ? "default": "pointer", padding: "0", opacity: isLoading ? 0.5 : 1 }}
+      aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
     >
       <img
         style={{ display: "block", width: "15px", height: "15px" }}
-        src={isFavorite ? favoriteIcon : unfavoriteIcon}
-        alt="favorite"
+        src={isFav ? favoriteIcon : unfavoriteIcon} // Cambia icono según estado local
+        alt="favorite toggle"
       />
     </button>
   );
 };
 
-// --- Main Component to List Activities ---
+// --- Componente ActivityList MODIFICADO ---
 export const ActivityList = () => {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Mapeo de categoría a icono (ajusta según tus categorías reales)
-  const categoryIcons = {
-    Meditation: MeditationIcon,
-    Breathing: BreathingIcon,
-    Stretching: StretchingIcon, // Corrected variable name
-    default: MeditationIcon // Icono por defecto si la categoría no coincide
-  };
 
   useEffect(() => {
     const fetchExercises = async () => {
       try {
         setLoading(true);
         setError(null);
-        // Llama al servicio para obtener todos los ejercicios del backend
+        // Ahora getAllExercises debería devolver 'is_favourite'
         const data = await getAllExercises();
-        setExercises(data || []); // Asegúrate de que sea un array
+        console.log("Fetched exercises:", data); // Log para depurar
+        setExercises(data || []);
       } catch (err) {
         console.error("Error fetching exercises:", err);
-        setError("Could not load activities. Please try again later.");
+        setError("Could not load activities.");
       } finally {
         setLoading(false);
       }
     };
     fetchExercises();
-  }, []); // El array vacío asegura que se ejecute solo una vez al montar
+  }, []);
 
-  // Función para guardar los datos del ejercicio seleccionado en localStorage
   const handleSelectActivity = (exercise) => {
     const activityData = {
-      exercise_id: exercise.exercise_id, // <-- IMPORTANTE: Incluir el ID real
+      exercise_id: exercise.exercise_id,
       title: exercise.title,
       description: exercise.description,
-      time: exercise.time || 180, // Usa el tiempo del ejercicio o 180s por defecto
-      // Asigna el icono basado en la categoría del ejercicio
+      time: exercise.time || 180,
       image: categoryIcons[exercise.category] || categoryIcons.default,
     };
     localStorage.setItem('currentActivity', JSON.stringify(activityData));
-    console.log("Saved to localStorage:", activityData); // Para depuración
+    console.log("Saved to localStorage:", activityData);
   };
 
-  // Renderizado condicional para carga y error
   if (loading) return <p style={{ textAlign: 'center', padding: '2rem' }}>Loading activities...</p>;
   if (error) return <p style={{ color: 'red', textAlign: 'center', padding: '2rem' }}>{error}</p>;
   if (exercises.length === 0) return <p style={{ textAlign: 'center', padding: '2rem' }}>No activities found.</p>;
 
-
-  // Renderizado de la lista de ejercicios
   return (
     <>
       {exercises.map((exercise) => {
-        // Determina qué componente contenedor usar (aquí se usa MeditationContainer como ejemplo genérico)
-        // Podrías tener lógica para usar BreathingContainer, StretchingContainer, etc. basado en exercise.category si son distintos
-        const ContainerComponent = MeditationContainer; // Ajusta si tienes contenedores diferentes
-        const DescComponent = MeditationDesc;       // Ajusta si tienes descripciones diferentes
+        const ContainerComponent = MeditationContainer; // Ajusta si es necesario
+        const DescComponent = MeditationDesc;       // Ajusta si es necesario
 
         return (
           <ContainerComponent key={exercise.exercise_id}>
             <img
               src={categoryIcons[exercise.category] || categoryIcons.default}
               alt={exercise.category || 'Activity'}
-              style={{ width: '50px', height: '50px', objectFit: 'contain' }} // Estilo de ejemplo
+              style={{ width: '50px', height: '50px', objectFit: 'contain' }}
             />
             <DescComponent>
               <Link
                 to="/current-activityPage"
-                onClick={() => handleSelectActivity(exercise)} // Pasa el objeto ejercicio completo
+                onClick={() => handleSelectActivity(exercise)}
               >
                 <h4>{exercise.title}</h4>
               </Link>
-              {/* Usa la descripción del ejercicio o un texto por defecto */}
               <h6>{exercise.description || 'Mindfulness exercise.'}</h6>
             </DescComponent>
-            <FavoriteButton exerciseId={exercise.exercise_id} />
+            {/* Pasar el ID y el estado inicial de favorito */}
+            <FavoriteButton
+              exerciseId={exercise.exercise_id}
+              initialIsFavorite={exercise.is_favourite} // <-- Pasar el estado desde los datos
+            />
           </ContainerComponent>
         );
       })}
@@ -129,4 +148,4 @@ export const ActivityList = () => {
   );
 };
 
-export default ActivityList;
+export default ActivityList; // Exporta ActivityList por defecto

@@ -297,3 +297,61 @@ export const completeExercise = async (req, res) => {
       });
   }
 };
+
+export const toggleFavourite = async (req, res) => {
+  const userId = req.user?.user_id;
+  const { exerciseId } = req.body; // Espera exerciseId en el body
+
+  console.log(`--- toggleFavourite Controller Hit --- User: ${userId}, Exercise: ${exerciseId}`);
+
+  if (!userId) {
+    console.error("User ID not found in token for toggleFavourite.");
+    return res.status(401).json({ error: "Authentication error: User ID missing." });
+  }
+  if (!exerciseId) {
+    console.error("Exercise ID not provided in body for toggleFavourite.");
+    return res.status(400).json({ error: "Exercise ID is required." });
+  }
+
+  try {
+    // Buscar si ya existe una entrada UserExercise
+    let userExercise = await UserExercise.findOne({
+      where: {
+        user_id: userId,
+        exercise_id: exerciseId,
+      },
+    });
+
+    let newIsFavouriteStatus;
+
+    if (userExercise) {
+      // Si existe, invierte el valor de is_favourite
+      userExercise.is_favourite = !userExercise.is_favourite;
+      await userExercise.save();
+      newIsFavouriteStatus = userExercise.is_favourite;
+      console.log(`Toggled favourite for UserExercise ${userExercise.id} to ${newIsFavouriteStatus}`);
+    } else {
+      // Si no existe, crea una nueva entrada marcada como favorita
+      // Nota: Asumimos que marcar como favorito no cuenta como completado.
+      console.log(`Creating new UserExercise for favourite toggle. User: ${userId}, Exercise: ${exerciseId}`);
+      userExercise = await UserExercise.create({
+        user_id: userId,
+        exercise_id: exerciseId,
+        completed_times: 0, // O 1 si prefieres que cuente como completado
+        is_favourite: true,   // Se crea como favorito
+      });
+      newIsFavouriteStatus = userExercise.is_favourite; // Será true
+      console.log(`Created new UserExercise ${userExercise.id} as favourite.`);
+    }
+
+    res.status(200).json({
+      message: "Favourite status toggled successfully.",
+      is_favourite: newIsFavouriteStatus,
+      userExercise: userExercise // Devuelve el registro actualizado/creado
+    });
+
+  } catch (error) {
+    console.error("!!! ERROR inside toggleFavourite controller:", error);
+    res.status(500).json({ error: "Server error toggling favourite status" });
+  }
+};
