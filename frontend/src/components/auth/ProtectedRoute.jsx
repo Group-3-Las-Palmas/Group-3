@@ -2,16 +2,17 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
 const ProtectedRoute = () => {
-  // Verify if token exists in LocalStorage
+  // Verifica si existe el token en localStorage
   const token = localStorage.getItem('token');
 
-  // If there is no token, redirect to login
+  // Si no hay token, redirige a la página de login (ruta raíz '/')
   if (!token) {
-    // 'replace' avoid that usuario can return to a protected page pressing "back" button
+    // 'replace' evita que el usuario pueda volver a la ruta protegida con el botón "atrás"
     return <Navigate to="/" replace />;
   }
 
-  // With token, render all content
+  // Si hay token, renderiza el contenido de la ruta hija (usando Outlet)
+  // En nuestro caso, renderizará el Layout y la página correspondiente anidada.
   return <Outlet />;
 };
 

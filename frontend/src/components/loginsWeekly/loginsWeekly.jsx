@@ -5,17 +5,18 @@ import {
   CirclesRow,
   LoginMessage,
 } from "./loginsWeeklyStyled";
-import { fetchLoginHistory } from "../../services/apiServices";
+import { fetchLoginHistory } from "../../services/apiServices"; // Asegúrate que la ruta es correcta
 
-// Get week dates
+// --- NUEVA FUNCIÓN para obtener las fechas de Lunes a Domingo de la semana actual ---
 const getCurrentWeekDates = () => {
   const today = new Date();
-  const currentDayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+  const currentDayOfWeek = today.getDay(); // 0=Domingo, 1=Lunes, ..., 6=Sábado
 
-  // Set Monday as [0]
+  // Ajustar para que Lunes sea el primer día (índice 0)
+  // Si hoy es Domingo (0), lo tratamos como día 7 para calcular el lunes anterior.
   const dayIndex = currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1;
 
-  // Diff between days
+  // Calcular cuántos días atrás está el lunes de esta semana
   const diffToMonday = dayIndex;
   const mondayDate = new Date(today);
   mondayDate.setDate(today.getDate() - diffToMonday);
@@ -24,11 +25,12 @@ const getCurrentWeekDates = () => {
   for (let i = 0; i < 7; i++) {
     const date = new Date(mondayDate);
     date.setDate(mondayDate.getDate() + i);
-    weekDates.push(date.toISOString().slice(0, 10)); // Format YYYY-MM-DD
+    weekDates.push(date.toISOString().slice(0, 10)); // Formato YYYY-MM-DD
   }
-  // Return array as ["LunFecha", "MarFecha", ..., "DomFecha"]
+  // Retorna un array como ["LunFecha", "MarFecha", ..., "DomFecha"]
   return weekDates;
 };
+// --- FIN NUEVA FUNCIÓN ---
 
 const LoginTracker = () => {
   const [loginDates, setLoginDates] = useState([]);
@@ -41,7 +43,7 @@ const LoginTracker = () => {
       setError(null);
       try {
         const fetchedDates = await fetchLoginHistory();
-        console.log("Datos recibidos del backend:", fetchedDates);
+        console.log("Datos recibidos del backend:", fetchedDates); // <-- AÑADE ESTO
         if (Array.isArray(fetchedDates)) {
           setLoginDates(fetchedDates);
         } else {
@@ -62,11 +64,11 @@ const LoginTracker = () => {
     loadHistory();
   }, []);
 
-  // Get current week dates
+  // --- Usar la nueva función para obtener las fechas de la semana actual ---
   const currentWeekDays = getCurrentWeekDates();
+  // --- Fin cambio ---
 
-
-  // Counter based in current week
+  // Calcular el contador basado en los días de la semana actual
   const loginCount = currentWeekDays.filter((date) =>
     loginDates.includes(date)
   ).length;
@@ -81,10 +83,10 @@ const LoginTracker = () => {
         this week!
       </LoginMessage>
       <CirclesRow>
-        {/* Map days from current week*/}
+        {/* Mapear sobre los días de la semana actual (Lunes a Domingo) */}
         {currentWeekDays.map((date, idx) => (
           <Circle
-            key={idx} //index
+            key={idx} // El índice ahora corresponde a 0=Lunes, 1=Martes, 2=Miércoles...
             $filled={loginDates.includes(date)}
           />
         ))}
