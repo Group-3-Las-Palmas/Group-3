@@ -6,12 +6,24 @@ export const SERVER_BASE_URL = "http://localhost:3000";
 const handleResponse = async (response) => {
   const contentType = response.headers.get("content-type");
   let data;
-  if (contentType && contentType.indexOf("application/json") !== -1) {
-    data = await response.json();
+
+  if (contentType && contentType.includes("application/json")) {
+    try {
+      data = await response.json();
+    // eslint-disable-next-line no-unused-vars
+    } catch (_e) {
+      console.warn("Failed to parse JSON response, reading as text.");
+      const text = await response.text();
+      throw new Error(text || `Invalid JSON received with status: ${response.status}`);
+    }
   } else {
     // If it is not JSON
     const text = await response.text();
-    data = { message: text || `Received non-JSON response with status: ${response.status}` };
+    if (!response.ok) {
+        data = { message: text || `Received non-JSON response with status: ${response.status}` };
+    } else {
+        return text;
+    }
   }
 
   if (!response.ok) {
@@ -42,11 +54,14 @@ export const registerUser = async (username, email, password) => {
 
 export const loginUser = async (email, password) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    // Construimos la URL completa manualmente aquí ya que no usa fetchApi
+    const loginUrl = `${API_BASE_URL}/api/auth/login`; // Añadimos /api manualmente
+    const response = await fetch(loginUrl, {
       method: "POST",
       headers: {
         Authorization: `Basic ${btoa(`${email}:${password}`)}`,
         "Content-Type": "application/json",
+        "Accept": "application/json",
       },
       // Without body
     });
@@ -65,6 +80,7 @@ export const fetchApi = async (endpoint, method = "GET", body = null) => {
   const token = getToken();
   const headers = {
     "Content-Type": "application/json",
+    "Accept": "application/json",
   };
 
   if (token) {
@@ -81,8 +97,19 @@ export const fetchApi = async (endpoint, method = "GET", body = null) => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    // --- NUEVA CONSTRUCCIÓN DE URL ---
+    // Asegura que el endpoint relativo empiece con '/'
+    const relativeEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    // Combina la base (sin /api) + /api + endpoint relativo
+    const finalUrl = `${API_BASE_URL}/api${relativeEndpoint}`; // <-- CAMBIO AQUÍ
+    // ---------------------------------
+
+    console.log(`Making API call: ${method} ${finalUrl}`);
+
+    const response = await fetch(finalUrl, config);
+
     return await handleResponse(response);
+
   } catch (error) {
     console.error(`API fetch error (${method} ${endpoint}):`, error);
     throw error;
@@ -90,18 +117,16 @@ export const fetchApi = async (endpoint, method = "GET", body = null) => {
 };
 
 // --- Examples of specific API functions using fetchApi ---
+// (No necesitan cambios, ya que usan fetchApi con la ruta relativa correcta)
 
-// Example: Get all posts (requires token)
 export const getPosts = async () => {
-  return await fetchApi("/posts"); // Defaults to GET
+  return await fetchApi("/posts");
 };
 
-// Example: Create a new post (requires token)
 export const createPost = async (content) => {
   return await fetchApi("/posts", "POST", { content });
 };
 
-// Example: Get user data by ID (requires token)
 export const getUserById = async (userId) => {
   return await fetchApi(`/users/${userId}`);
 };
@@ -123,16 +148,12 @@ export const getMindfulnessQuote = async () => {
       method: 'GET',
       headers: {
         'x-rapidapi-host': 'metaapi-mindfulness-quotes.p.rapidapi.com',
-        'x-rapidapi-key': 'c484c9e532msh2f0aec8a41c9b56p1a057cjsn41d56c80bc5a' // Considera mover esta clave a variables de entorno
+        'x-rapidapi-key': 'c484c9e532msh2f0aec8a41c9b56p1a057cjsn41d56c80bc5a'
       }
     });
-
-    if (!response.ok) throw new Error('No quote today, sorry!');
-
-    const data = await response.json();
-    return data;
+    return await handleResponse(response);
   } catch (error) {
     console.error('Error fetching mindfulness quote:', error);
-    return null;
+    throw error;
   }
 };
