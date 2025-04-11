@@ -1,6 +1,5 @@
 import sequelize from "../db.js";
-import { DataTypes } from "sequelize"; // Asegúrate que DataTypes está importado
-
+import { DataTypes } from "sequelize"; 
 const UserExercise = sequelize.define(
     "UserExercise",
     {
@@ -29,7 +28,7 @@ const UserExercise = sequelize.define(
         completed_times: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: 0 // Cambiado a 0? O mantenlo en 1 si prefieres. 0 tiene más sentido si se crea al marcar fav.
+            defaultValue: 0 
         },
         is_favourite: {
             type: DataTypes.BOOLEAN,
@@ -38,8 +37,8 @@ const UserExercise = sequelize.define(
         },
     },
     {
-        tableName: "user_exercises", // Nombre correcto de la tabla
-        timestamps: false           // Asumiendo que no usas createdAt/updatedAt
+        tableName: "user_exercises", 
+        timestamps: false           
     }
     // ------------------------------------
 );

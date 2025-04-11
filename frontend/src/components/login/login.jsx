@@ -56,7 +56,7 @@ const Login = () => {
         <h3>Password</h3>
         <Input
           type="password"
-          placeholder="Atleast 8 characters"
+          placeholder="Atleast 6 characters"
           value={password}
           // Update state when password input changes
           onChange={(e) => setPassword(e.target.value)}

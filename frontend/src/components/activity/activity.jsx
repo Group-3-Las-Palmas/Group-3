@@ -1,22 +1,22 @@
-// Group-3/frontend/src/components/activity/activity.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// Asume que exerciseServices ahora tiene getAllExercises usando fetchApi
+
 import { getAllExercises } from '../../services/exerciseServices';
-// Importa el nuevo servicio para el toggle
+
 import { toggleFavoriteExercise } from '../../services/userExerciseServices';
 import {
-  MeditationContainer, MeditationDesc, /* otros si usas */
+  MeditationContainer, MeditationDesc, 
 } from "./activityStyled";
 
 // Import icons
 import MeditationIcon from "../../assets/Meditation.svg";
-import favoriteIcon from "../../assets/favoriteIcon.svg"; // Corazón lleno
-import unfavoriteIcon from "../../assets/unfavoriteIcon.svg"; // Corazón vacío
+import favoriteIcon from "../../assets/favoriteIcon.svg"; 
+import unfavoriteIcon from "../../assets/unfavoriteIcon.svg"; 
 import BreathingIcon from "../../assets/breathingIcon.svg";
 import StretchingIcon from "../../assets/stretchingIcon.svg";
 
-// Mapeo de iconos de categoría
+
 const categoryIcons = {
     Meditation: MeditationIcon,
     Breathing: BreathingIcon,
@@ -24,34 +24,33 @@ const categoryIcons = {
     default: MeditationIcon
 };
 
-// --- Componente FavoriteButton MODIFICADO ---
-export const FavoriteButton = ({ exerciseId, initialIsFavorite }) => {
-  // Estado local para la UI, inicializado con el prop
-  const [isFav, setIsFav] = useState(initialIsFavorite);
-  const [isLoading, setIsLoading] = useState(false); // Para deshabilitar mientras se guarda
 
-  // Actualizar estado si el prop inicial cambia
+export const FavoriteButton = ({ exerciseId, initialIsFavorite }) => {
+  
+  const [isFav, setIsFav] = useState(initialIsFavorite);
+  const [isLoading, setIsLoading] = useState(false); 
+
+  
   useEffect(() => {
     setIsFav(initialIsFavorite);
   }, [initialIsFavorite]);
 
   const handleClick = async () => {
-    if (isLoading) return; // Evitar clicks múltiples
+    if (isLoading) return; 
 
-    const previousIsFav = isFav; // Guardar estado anterior por si falla
+    const previousIsFav = isFav; 
     setIsLoading(true);
-    setIsFav(!isFav); // Actualización optimista de la UI
+    setIsFav(!isFav); 
 
     try {
-      // Llamar al backend para cambiar el estado real
+     
       const response = await toggleFavoriteExercise(exerciseId);
-      // Opcional: Forzar la actualización del estado con la respuesta del backend
-      // setIsFav(response.is_favourite); // Más seguro pero puede causar pequeño parpadeo
+      
       console.log(`Toggled favorite for ${exerciseId} to ${response.is_favourite}`);
     } catch (error) {
       console.error("Error toggling favorite:", error);
-      setIsFav(previousIsFav); // Revertir la UI si falla la llamada al backend
-      // Aquí podrías mostrar un mensaje de error al usuario
+      setIsFav(previousIsFav); 
+      
     } finally {
       setIsLoading(false);
     }
@@ -60,20 +59,20 @@ export const FavoriteButton = ({ exerciseId, initialIsFavorite }) => {
   return (
     <button
       onClick={handleClick}
-      disabled={isLoading} // Deshabilitar mientras carga
+      disabled={isLoading} 
       style={{ background: "none", border: "none", cursor: isLoading ? "default": "pointer", padding: "0", opacity: isLoading ? 0.5 : 1 }}
       aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
     >
       <img
         style={{ display: "block", width: "15px", height: "15px" }}
-        src={isFav ? favoriteIcon : unfavoriteIcon} // Cambia icono según estado local
+        src={isFav ? favoriteIcon : unfavoriteIcon} 
         alt="favorite toggle"
       />
     </button>
   );
 };
 
-// --- Componente ActivityList MODIFICADO ---
+
 export const ActivityList = () => {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -84,9 +83,9 @@ export const ActivityList = () => {
       try {
         setLoading(true);
         setError(null);
-        // Ahora getAllExercises debería devolver 'is_favourite'
+        
         const data = await getAllExercises();
-        console.log("Fetched exercises:", data); // Log para depurar
+        console.log("Fetched exercises:", data); 
         setExercises(data || []);
       } catch (err) {
         console.error("Error fetching exercises:", err);
@@ -117,8 +116,8 @@ export const ActivityList = () => {
   return (
     <>
       {exercises.map((exercise) => {
-        const ContainerComponent = MeditationContainer; // Ajusta si es necesario
-        const DescComponent = MeditationDesc;       // Ajusta si es necesario
+        const ContainerComponent = MeditationContainer; 
+        const DescComponent = MeditationDesc;       
 
         return (
           <ContainerComponent key={exercise.exercise_id}>
@@ -136,10 +135,10 @@ export const ActivityList = () => {
               </Link>
               <h6>{exercise.description || 'Mindfulness exercise.'}</h6>
             </DescComponent>
-            {/* Pasar el ID y el estado inicial de favorito */}
+           
             <FavoriteButton
               exerciseId={exercise.exercise_id}
-              initialIsFavorite={exercise.is_favourite} // <-- Pasar el estado desde los datos
+              initialIsFavorite={exercise.is_favourite} 
             />
           </ContainerComponent>
         );
@@ -148,4 +147,4 @@ export const ActivityList = () => {
   );
 };
 
-export default ActivityList; // Exporta ActivityList por defecto
+export default ActivityList; 
