@@ -1,11 +1,11 @@
-// Background.scss
+
 .aura-background {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #FFF2D6; // Soft beige color
+    background-color: #FFF2D6; 
     pointer-events: none;
     z-index: -1;
     overflow: hidden;
@@ -13,7 +13,7 @@
   
   .aura {
     position: absolute;
-    width: 250px;  // Adjusted size
+    width: 250px;  
     height: 250px;
     background: radial-gradient(
       circle,
