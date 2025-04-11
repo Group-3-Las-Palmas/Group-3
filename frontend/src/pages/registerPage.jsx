@@ -27,27 +27,54 @@ export const Register = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const validateForm = () => {
+    if (form.username.trim().length < 3) {
+      setError("Username must be at least 3 characters.");
+      return false;
+    }
+  
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      setError("Please enter a valid email.");
+      return false;
+    }
+  
+    if (form.password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return false;
+    }
+  
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match.");
+      return false;
+    }
+  
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
-    if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match.");
+  
+    if (!validateForm()) {
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const data = await registerUser(form.username, form.email, form.password);
       console.log("Registered user:", data.user);
-      navigate("/"); // Redirect to login
+      navigate("/");
     } catch (err) {
       setError(err.message || "Registration failed.");
     } finally {
       setLoading(false);
     }
   };
+  
+
+ 
 
   return (
     <Container>
